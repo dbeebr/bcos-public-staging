@@ -14,6 +14,7 @@ examples/neutral-cell/
   decisions/example-decision.md      ← a recorded decision
   proofs/example-proof.md            ← a proof record
   handoffs/example-handoff.md        ← a handoff record
+  library/README.md                  ← a nascent Library with one proven pattern
 ```
 
 ## Scenario
@@ -40,3 +41,4 @@ Read the files in this order:
 - Human Gates require explicit human approval before sensitive steps
 - Proof records durable evidence, not just confidence
 - Handoffs let another person or agent continue without re-reading everything
+- A Library grows from proven patterns — the Cell's distilled, reusable operating capital

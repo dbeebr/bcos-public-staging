@@ -223,6 +223,26 @@ This document defines the minimum public vocabulary for **BCOS — Base Context 
 
 ---
 
+## Library
+
+**Definition:** The accumulated set of reusable patterns, proven templates, validated decision records, and trusted artifacts that a Cell has produced and would use again.
+
+**Why it exists:** Structured work produces reusable capital. A Cell that has operated well holds a Library that lets new members, agents, or future Cells start from proven patterns rather than blank state.
+
+**Minimal fields:**
+
+- `scope`
+- `entry_points`
+- `artifact_types`
+- `public_safe`
+- `private_only`
+
+**Neutral example:** "After twelve months of operating, a Cell's Library contains five validated decision templates, two proven task patterns, and three playbooks distilled from completed work."
+
+**What it is not:** A folder full of notes. A Library is curated and proven, not a dump of every artifact the Cell has ever produced. In BCOS v0.1, Library is a core concept and primitive, not shipped tooling or a required top-level folder.
+
+---
+
 ## Source of Truth
 
 **Definition:** The durable artifact or system that has authority for a specific claim.

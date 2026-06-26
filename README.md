@@ -37,6 +37,23 @@ BCOS is not:
 - a place to dump every document;
 - a guarantee that all context should be public.
 
+## How BCOS Compounds
+
+The longer a Cell operates under BCOS, the more its Library grows. Templates get validated. Decision patterns get proven. Handoff records accumulate. Future Cells — and future agents — can start from that Library rather than blank state.
+
+The system sequence:
+
+```text
+Work happens inside a Cell
+  → Routers (Context Index, agent config) direct attention
+  → Tasks, Decisions, Handoffs, Proofs record what happened
+  → Human Gates protect sensitive judgment
+  → The best patterns are distilled into the Library
+  → The Library makes future work faster and more reliable
+```
+
+BCOS is not a template set you copy once. It is an operating layer where structured work produces compounding, reusable value. See `docs/library.md` for the full Library concept and `docs/cell-story.md` for a narrative walkthrough of how Cells grow.
+
 ## Five-Minute Mental Model
 
 1. **Context is operational capital.** Preserve only what future work needs.
@@ -49,19 +66,20 @@ BCOS is not:
 
 ## Quickstart With Templates
 
-Start with five files:
+Start with six files:
 
 ```text
-CONTEXT_INDEX.md
+CONTEXT_INDEX.md              ← use templates/context-index.template.md
 tasks/TASK.template.md
 decisions/DECISION.template.md
 handoffs/HANDOFF.template.md
 proofs/PROOF.template.md
+human-gates/HUMAN-GATE.template.md
 ```
 
 Suggested first run:
 
-1. Create a small `CONTEXT_INDEX.md` that says what to read first and what not to load by default.
+1. Copy `templates/context-index.template.md` to create your `CONTEXT_INDEX.md`. Fill in what to read first and what not to load by default.
 2. Write one task as an executable contract.
 3. Record one decision that the task depends on.
 4. Complete the task with evidence.
@@ -93,8 +111,11 @@ SUPPORT.md
 docs/
   manifesto.md
   core-model.md
+  library.md
+  cell-story.md
   public-private-boundary.md
 templates/
+  context-index.template.md
   task.template.md
   decision.template.md
   handoff.template.md
