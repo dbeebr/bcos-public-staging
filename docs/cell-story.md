@@ -89,3 +89,13 @@ A small team is building a public documentation standard. They create a Cell.
 **Week 12:** The Cell's Library has three proven templates, two decision patterns, and a playbook for public documentation reviews. A new team member joins and is productive within an hour because the Context Index, the Library, and the recorded decisions give them everything they need.
 
 The Cell did not require a special tool or platform. It required the discipline to write things down in a structure that survives handoffs — and the reward was compounding: each artifact made the next piece of work easier.
+
+## Decision Ownership
+
+Every Human Gate in a Cell names an accountable human decision owner. This is not a formality — it is the mechanism that keeps the Cell honest.
+
+Agents can propose decisions, draft artifacts, run validations, and produce reports. But agents may not approve Human Gates, accept truth on behalf of the Cell, or make sensitive changes without explicit human authorization.
+
+This boundary matters most when work moves fast. An agent that can execute twenty tasks in an afternoon still needs a human to decide whether to publish, change a license, or commit to a public interface. The Human Gate is where speed pauses for judgment.
+
+A healthy Cell makes this authority explicit: who owns each gate, what they are deciding, and what evidence they need before approving. Future operating templates — such as team bootstrap kits — may encode this authority directly into the Cell's project configuration so that every participant, human or agent, knows the rules from the start.
