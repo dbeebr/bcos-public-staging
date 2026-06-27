@@ -76,6 +76,23 @@ The Library concept creates a natural contribution path for the BCOS community:
 
 The standard for community Library contributions is the same as for any Library entry: it should be validated through use, not just proposed.
 
+## Why Library Is a Surface
+
+Library started as a concept — the idea that structured work produces reusable capital.
+It became a dedicated surface when operating evidence showed that curated knowledge had
+no clear home. Proven patterns were scattered across archived tasks and old decisions.
+Teams kept relearning what they already knew.
+
+Adding Library as a top-level surface gives curated knowledge a visible, findable
+location. It is separate from History because mixing curated patterns with raw records
+makes both harder to use: History becomes harder to scan, and Library becomes harder
+to trust as a curated set.
+
+See `docs/why-these-surfaces.md` for the full reasoning behind Library and every other
+BCOS surface.
+
 ## Status
 
-Library is a concept in BCOS v0.1. The concept is defined here and referenced in the core model. A `library/` folder structure is not yet part of the v0.1 package — the concept comes first, the structure follows when there is enough validated content to populate it.
+Library is a core primitive in BCOS v0.1. The concept is defined here and referenced in
+the core model. In Teamcell Lite, `library/` is a first-class top-level surface — the
+place where curated reusable knowledge, proven templates, and validated patterns live.

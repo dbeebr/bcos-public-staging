@@ -54,6 +54,8 @@ You finish a session but the work continues. You write a handoff: here is what I
 
 After several months of operating, you notice that your task template has evolved. The version you use now is better than the one you started with. You extract it into your Library as a proven pattern. The next Cell you build starts from that template instead of from blank state.
 
+This is where the surfaces start making sense as a system: work happens in `work/`, evidence lands in `history/`, analyses go to `reports/`, and the patterns worth keeping are curated into `library/`. For the reasoning behind each surface — why Library and History are separate, why Reports stays top-level, and why there is no code surface — see `docs/why-these-surfaces.md`.
+
 ### Mature Cell
 
 A mature Cell has a growing Library, a history of recorded decisions, a set of proven templates, and a Context Index that routes attention efficiently. New participants can contribute on day one. Agents can execute tasks without ambiguity. The Cell's operating history is an asset, not a liability.

@@ -52,7 +52,7 @@ Work happens inside a Cell
   → The Library makes future work faster and more reliable
 ```
 
-BCOS is not a template set you copy once. It is an operating layer where structured work produces compounding, reusable value. See `docs/library.md` for the full Library concept and `docs/cell-story.md` for a narrative walkthrough of how Cells grow.
+BCOS is not a template set you copy once. It is an operating layer where structured work produces compounding, reusable value. See `docs/library.md` for the full Library concept, `docs/cell-story.md` for a narrative walkthrough of how Cells grow, and `docs/why-these-surfaces.md` for the reasoning behind each surface — why Library exists, why History and Reports are separate, and why there is no top-level code surface.
 
 ## Five-Minute Mental Model
 
@@ -113,6 +113,7 @@ docs/
   core-model.md
   library.md
   cell-story.md
+  why-these-surfaces.md
   public-private-boundary.md
 templates/
   context-index.template.md
