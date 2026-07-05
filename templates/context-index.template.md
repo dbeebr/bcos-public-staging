@@ -1,5 +1,5 @@
 ---
-bcos_type: context-index
+bcos_type: index
 id: CONTEXT-INDEX-{{CELL-ID}}
 purpose: {{Brief description of what this Cell does}}
 created_at: {{YYYY-MM-DD}}

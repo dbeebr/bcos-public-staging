@@ -50,6 +50,12 @@ at different layers of the system.
 This example teaches the building blocks. Operating templates teach how to run a
 Cell day-to-day.
 
+For the operating-surface layer, see `examples/djbrain-cell/` — a complete
+active Cell with tiered surfaces, a full work loop (intake → task → gate →
+decision → proof → handoff → history → library), and a maintained domain
+capability under `apps/djbrain/`. Read this example first to understand the
+pieces; copy djbrain-cell when you want to start operating.
+
 ## Key Concepts Illustrated
 
 - A task defines allowed and forbidden actions before work begins

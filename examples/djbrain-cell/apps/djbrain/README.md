@@ -1,23 +1,46 @@
+---
+bcos_type: doc
+id: DJBRAIN-APP-README
+title: "djbrain App Package"
+status: active
+created: 2026-07-05
+created_by: bcos-maintainers
+surface: apps
+app_id: djbrain
+related:
+  - CONTEXT_INDEX.md
+  - ../../decisions/DECISION-20260701-001-djbrain-app-package.md
+---
+
 # djbrain App Package
 
-`djbrain` is an example of an active BCOS app package.
+*(Fictional example.)*
 
-Use this package for the domain-specific material that belongs to djbrain itself.
+djbrain is this Cell's **active domain capability**: the knowledge brain a
+fictional music-events team maintains so that agents can produce set briefs,
+answer genre questions, and check venue fit without hallucinating.
 
-## Local folders
+It is an app package — not a `library/` entry — because it is *operated*:
+it has its own context index, knowledge that gets maintained, prompt payloads
+that get versioned, and its own proof loop
+(DECISION-20260701-001 records the placement rationale).
+
+## Local structure
 
 ```text
-knowledge/
-prompts/
-reports/
-proofs/
+README.md          ← this file
+CONTEXT_INDEX.md   ← local routing; read before touching anything here
+knowledge/         ← maintained domain knowledge (genres, venues)
+prompts/           ← reusable prompt payloads agents execute
+reports/           ← app-specific analysis
+proofs/            ← app-specific evidence
 ```
 
-## Routing
+## Rules for agents
 
-- Put stable source context in `knowledge/`.
-- Put reusable prompt payloads in `prompts/`.
-- Put app-specific analysis in `reports/`.
-- Put app-specific evidence in `proofs/`.
-
-When something becomes useful beyond djbrain, distill it into the Cell-level `library/`.
+1. **Never invent domain facts.** If it is not in `knowledge/`, say so.
+2. Content changes go through a Cell-root `work/` task
+   (see `playbooks/PLAYBOOK-update-djbrain-knowledge.md`).
+3. Output posture is text-only (HUMAN-GATE-20260630-001).
+4. When a pattern proves reusable beyond djbrain, distill a copy to the
+   Cell-level `library/` — the operating original stays here.

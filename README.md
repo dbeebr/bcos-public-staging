@@ -64,9 +64,16 @@ BCOS is not a template set you copy once. It is an operating layer where structu
 6. **Human Gates protect judgment.** Public, legal, private, irreversible, or costly steps require explicit human approval.
 7. **Public surface is curated.** A real operating layer may contain private history that should never be published raw.
 
-## Quickstart With Templates
+## Quickstart
 
-Start with six files:
+Two paths:
+
+**Operational path** — read `docs/create-a-cell.md`. It takes you from clone
+to a working Cell in your first hour: core surfaces, the three contracts
+(Context Index, agent contract, team file), your first work loop with a
+Completion Record, and the rule for when to add more surfaces.
+
+**Template path** — start with six files:
 
 ```text
 CONTEXT_INDEX.md              ← use templates/context-index.template.md
@@ -85,6 +92,10 @@ Suggested first run:
 4. Complete the task with evidence.
 5. Add a handoff so another person or agent can continue without reading the whole history.
 
+To see everything working together, open `examples/djbrain-cell/` — a
+complete fictional Cell with a finished work loop and an active app package
+under `apps/djbrain/`.
+
 ## Example Workflow
 
 ```text
@@ -98,8 +109,6 @@ Suggested first run:
 ```
 
 ## Repository Map
-
-Recommended public v0.1 structure:
 
 ```text
 README.md
@@ -115,6 +124,8 @@ docs/
   cell-story.md
   why-these-surfaces.md
   public-private-boundary.md
+  public-cell-target-structure.md   ← the two-shape model and Cell tiers
+  create-a-cell.md                  ← first-hour operational path
 templates/
   context-index.template.md
   task.template.md
@@ -122,8 +133,12 @@ templates/
   handoff.template.md
   proof.template.md
   human-gate.template.md
+schemas/
+  routing-frontmatter.schema.md     ← the tiered frontmatter contract
+  completion-record.schema.md       ← what makes work actually done
 examples/
-  neutral-cell/
+  neutral-cell/                     ← the primitives, one folder per artifact type
+  djbrain-cell/                     ← a complete operating Cell with apps/djbrain/
 ```
 
 ## Status
