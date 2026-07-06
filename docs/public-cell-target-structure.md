@@ -25,7 +25,7 @@ templates/
 schemas/
 examples/
   neutral-cell/      ← the primitives, one folder per artifact type
-  djbrain-cell/      ← a complete operating Cell with an app package
+  setbrain-cell/      ← a complete operating Cell with an app package
 ```
 
 ## Active Cell repo — three tiers, not one flat wall
@@ -97,8 +97,8 @@ These are not passive documents.
 - **Demotion:** an unmaintained app package is archived to `history/` or
   reduced to its `library/` remains — recorded as a decision.
 
-`examples/djbrain-cell/` shows the full shape, including the promotion
-decision record (`decisions/DECISION-20260701-001-djbrain-app-package.md`).
+`examples/setbrain-cell/` shows the full shape, including the promotion
+decision record (`decisions/DECISION-20260701-001-setbrain-app-package.md`).
 
 ## Markdown routing fields
 
@@ -127,8 +127,8 @@ core profile.
 
 - `examples/neutral-cell/` teaches the **primitives**: one folder per artifact
   type, minimal moving parts.
-- `examples/djbrain-cell/` teaches the **operating shape**: tiered surfaces,
+- `examples/setbrain-cell/` teaches the **operating shape**: tiered surfaces,
   a complete work loop with proof and handoff, and an app package.
 
-Read neutral-cell to understand the pieces. Copy djbrain-cell to start
+Read neutral-cell to understand the pieces. Copy setbrain-cell to start
 operating.

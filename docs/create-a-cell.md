@@ -30,7 +30,7 @@ inbox/     work/     human-gates/     history/     playbooks/     scripts/
 ```
 
 Copy the templates from `templates/` in this starter, or copy the whole
-`examples/djbrain-cell/` and replace its fictional content. Put artifact
+`examples/setbrain-cell/` and replace its fictional content. Put artifact
 templates *in-surface* (`work/TEMPLATE.task.md`,
 `human-gates/TEMPLATE.human-gate.md`) — that is where agents look.
 
@@ -77,7 +77,7 @@ not upfront.
 The `apps/` rule: **active capability → `apps/<app-id>/`; passive proven
 pattern → `library/`.** An app package gets its own `README.md`,
 `CONTEXT_INDEX.md`, `knowledge/`, `prompts/`, and its own proof loop. See
-`examples/djbrain-cell/` for the full worked shape, including the promotion
+`examples/setbrain-cell/` for the full worked shape, including the promotion
 decision record.
 
 ## 6. How agents start (the short version)
@@ -101,5 +101,5 @@ or a better routing rule — not a longer chat prompt.
 - **Completion** is a committed Completion Record plus verified push — never
   prose in a chat window.
 
-The worked chain in `examples/djbrain-cell/README.md` shows all three in
+The worked chain in `examples/setbrain-cell/README.md` shows all three in
 eight files.

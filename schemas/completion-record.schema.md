@@ -47,5 +47,5 @@ notes: <anything the next reader needs>
 4. **The record is append-only.** Corrections are new records or new tasks,
    never edits that rewrite what was claimed.
 
-See `examples/djbrain-cell/work/TASK-20260701-001-seed-set-brief-guide.md` for
+See `examples/setbrain-cell/work/TASK-20260701-001-seed-set-brief-guide.md` for
 a complete worked example.

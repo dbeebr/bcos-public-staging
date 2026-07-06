@@ -92,9 +92,9 @@ Suggested first run:
 4. Complete the task with evidence.
 5. Add a handoff so another person or agent can continue without reading the whole history.
 
-To see everything working together, open `examples/djbrain-cell/` — a
+To see everything working together, open `examples/setbrain-cell/` — a
 complete fictional Cell with a finished work loop and an active app package
-under `apps/djbrain/`.
+under `apps/setbrain/`.
 
 ## Example Workflow
 
@@ -138,7 +138,7 @@ schemas/
   completion-record.schema.md       ← what makes work actually done
 examples/
   neutral-cell/                     ← the primitives, one folder per artifact type
-  djbrain-cell/                     ← a complete operating Cell with apps/djbrain/
+  setbrain-cell/                     ← a complete operating Cell with apps/setbrain/
 ```
 
 ## Status
