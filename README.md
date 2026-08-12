@@ -4,6 +4,8 @@ BCOS is a coordination layer for distributed work between humans, AI agents, tea
 
 It helps turn work context into executable, reviewable operating memory.
 
+BCOS is not merely a memory system. It is a substrate on which thoughts can survive their originator, remain attributable and contextual, be rediscovered, recombined and continue to evolve across humans, machines and time.
+
 ## The Problem
 
 Work now spreads across chats, repositories, documents, issues, meetings, agents, and long-running decisions. The context exists, but it is rarely in a form that another human or AI agent can safely use.
