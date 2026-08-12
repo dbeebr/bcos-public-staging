@@ -2,6 +2,28 @@
 
 This document defines the minimum public vocabulary for **BCOS — Base Context Operating System**.
 
+## Thought Seed
+
+**Definition:** A small, attributable unit of unfinished or emerging thought that may later become work, a proposal, a decision, a Library pattern, or another typed BCOS object.
+
+**Why it exists:** Not every useful thought begins as structured work. Capturing its origin and context gives future participants a reliable starting point without prematurely treating the thought as decided or validated.
+
+**Minimal fields:**
+
+- `content`
+- `origin`
+- `context`
+- `status`
+- `attribution`
+- `relationships`
+- `derived_from`
+
+**Neutral example:** "A contributor notices that a recurring handoff problem may need a reusable review pattern, but the pattern has not yet been tested."
+
+**What it is not:** A raw transcript, a validated Library entry, or a promise that BCOS will develop the thought automatically. Lineage is recorded through provenance and relationships to later artifacts rather than as a separate top-level object. Thought Seed is a conceptual primitive, not a claim of shipped tooling.
+
+---
+
 ## Work
 
 **Definition:** A bounded stream of effort that changes understanding, decisions, artifacts, systems, or outcomes.

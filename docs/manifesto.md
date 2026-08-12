@@ -24,6 +24,21 @@ BCOS turns context into operational capital: structured, durable, reviewable, an
 
 The goal is not to document everything. The goal is to preserve the smallest sufficient truth that lets work continue.
 
+## Continuity Beyond Memory
+
+Preserving context is necessary, but preservation alone is not enough. Useful thoughts and work should remain attributable and connected to their origin so they can be rediscovered, recombined, and advanced instead of repeatedly starting from zero.
+
+BCOS is designed to support that continuity across:
+
+- human ↔ machine;
+- human ↔ human;
+- human ↔ self-over-time;
+- machine ↔ machine.
+
+The next participant may be a collaborator, an agent, or the same person returning later. In each case, durable structure makes it possible to understand where an idea came from, what happened to it, and what could happen next.
+
+This is a direction for how BCOS structures context and work, not a claim that it automatically produces collective intelligence or evolves ideas on its own. Participants still interpret, validate, decide, and act.
+
 ## Tasks Need Executable Contracts
 
 A task is not just a request. A serious task needs a contract:

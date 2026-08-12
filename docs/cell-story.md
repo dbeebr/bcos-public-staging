@@ -16,7 +16,7 @@ At first it feels like overhead. One more file to maintain.
 
 Then you make your first decision and record it. The next time someone asks "why did we do it this way?", the answer is already written. You do not re-litigate. You do not search chat logs. The decision is there, with its rationale, its scope, and who made it.
 
-Then you hand off work to someone else — or to an agent — and they pick it up without a thirty-minute briefing. The handoff record tells them where things stand, what is done, what is open, and what to watch out for.
+Then work continues with another human, an AI agent, or you returning several weeks later. The handoff record lets the next participant pick it up without a thirty-minute briefing: it says where things stand, what is done, what is open, and what to watch out for.
 
 That is when the Cell starts working. Not because you followed a process, but because the process started saving you time.
 

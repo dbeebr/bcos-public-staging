@@ -36,6 +36,18 @@ The common thread: everything in a Library has been used, tested, and found wort
 
 A Library that contains everything is just an archive. Curation is what makes it useful.
 
+## From Emerging Thought to Library
+
+Emerging thought belongs earlier in the operating flow. A Thought Seed can preserve a small idea with its origin, context, attribution, and relationships before anyone knows whether it is useful. It may later inform structured work or another typed BCOS object, but it does not become Library content merely because it was captured.
+
+The intended progression is:
+
+```text
+emerging thought → structured lineage/work → validated learning → Library
+```
+
+Lineage records provenance and relationships as the thought develops. Promotion into the Library happens only after the resulting learning or pattern has been tested, curated, and judged worth reusing. This keeps living cognitive material available without weakening the Library into a generic notes archive.
+
 ## How Library Relates to Cells, Routers, and Modules
 
 A **Cell** is the operating boundary. Work happens inside a Cell.
