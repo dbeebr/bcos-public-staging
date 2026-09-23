@@ -33,6 +33,10 @@ human_gate_required: []       # gates this work surfaced, or empty
 accepted_risks:
   - <risk knowingly left open>
 notes: <anything the next reader needs>
+procedures_applied:           # what was loaded AND applied, with evidence
+  - <PROCEDURE-ID>: loaded <path>@<version>; applied: <evidence>
+  - none: <reason>            # when no procedure applied
+closing_learning: none        # or: pattern/correction, evidence, scope, route
 ```
 
 ## Rules
@@ -49,3 +53,40 @@ notes: <anything the next reader needs>
 
 See `examples/setbrain-cell/work/TASK-20260701-001-seed-set-brief-guide.md` for
 a complete worked example.
+
+## Teamcell Lite (operating profile)
+
+The Teamcell Lite kit (`distribution/teamcell-lite/`) implements this schema
+in its stricter operating form. Its `AGENTS.md` and `work/TEMPLATE.task.md`
+require, before `work_status: done`: `status: done`, `completed_by` (or
+`agent`), `completed_date`, `substantive_commit_sha` (or `commit_sha`),
+`completion_record_commit_sha` (`same` or a SHA),
+`remote_head_verified_at_completion` (the verified origin SHA, or
+`local-only` when the Cell has no `origin`), `changed_files`, `validation`
+(including `./scripts/validate-cell.sh` and `git diff --check`),
+`build_drift`, `follow_up_routing`, `human_gate_required`,
+`recommendation_only_ending: false`, `handoff_anchor`, `accepted_risks`,
+`notes`, `procedures_applied` and `closing_learning` (the last two only warn
+when missing, so older records stay valid).
+
+The Cell's `./scripts/validate-cell.sh` enforces this through
+`scripts/validate-completion.py`. It fails when:
+
+- a done work item has no Completion Record, a record whose `status` is not
+  `done`, a missing field, or a value still in template form (`<...>`,
+  `YYYY-MM-DD`, `a | b`);
+- the Definition of Done still has an unchecked `- [ ]` item;
+- a SHA is not a full 40-character SHA, does not exist in the repository, or
+  the recorded remote head does not contain the substantive commit;
+- `local-only` is recorded although an `origin` remote exists;
+- a recorded validation says `fail`;
+- a Completion Record says done while `work_status` is not `done` (status
+  drift in the other direction);
+- a `procedures_applied` entry claims `applied` without `loaded <path>`, or
+  names a procedure that is neither in the Cell's Procedure Index nor an
+  existing path — naming a procedure is not evidence of using it.
+
+Pre-existing validator failures are handled by exact failure identity, never
+by count: `./scripts/validate-cell.sh --baseline <file>` blocks any failure
+not listed in the baseline, even when the total is unchanged (the kit's
+`playbooks/VALIDATOR-BASELINE.playbook.md`).

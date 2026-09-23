@@ -1,10 +1,13 @@
 ---
+bcos_type: task
 id: TASK-YYYYMMDD-NNN
 title: "Short description of what this task accomplishes"
 status: draft
+work_status: open            # open | in-progress | needs-review | done
 created: YYYY-MM-DD
 created_by: human-or-agent-id
 owner: human-or-agent-id
+surface: work
 ---
 
 # TASK-YYYYMMDD-NNN — Title
@@ -56,6 +59,22 @@ Additional validation specific to this task:
 - [ ] Deliverable exists and passes structural check
 - [ ] No forbidden actions were taken
 
+## Procedures
+
+Selected procedures from the Cell's Procedure Index (`CONTEXT_INDEX.md`),
+one line each with path and version, or `none` with a reason. The executor
+re-checks the index itself; a listed procedure is not yet loaded content.
+
+- `<PROCEDURE-ID>` — `<path>`@`<version>` — why it applies
+
+## Handoff
+
+- Planned by: <agent or human>, on <surface/app>
+- Executor access needed: <capability class>; not allowed: <...>
+- Start prompt: repository, this task's path, "follow the Cell entry and
+  this task; load the procedures above in full; close with the Completion
+  Record" — enough for an agent that never saw the planning conversation.
+
 ## Definition of Done
 
 - [ ] All deliverables exist and are committed
@@ -65,6 +84,25 @@ Additional validation specific to this task:
 
 ## Completion Record
 
+Fill this only when the Definition of Done is met, then set
+`work_status: done` in the frontmatter in the same commit. Replace every
+placeholder with real evidence (`schemas/completion-record.schema.md`).
+
 ```yaml
-status: pending
+status: pending               # done once complete
+completed_by: <human-or-agent-id>
+completed_date: YYYY-MM-DD
+commit_sha: <full 40-character SHA of the substantive commit>
+changed_files:
+  - <path>: <what changed and why>
+validation:
+  git diff --check: pass
+recommendation_only_ending: false
+follow_up: none
+human_gate_required: []
+accepted_risks: []
+notes: null
+procedures_applied:
+  - <PROCEDURE-ID>: loaded <path>@<version>; applied: <evidence>
+closing_learning: none
 ```

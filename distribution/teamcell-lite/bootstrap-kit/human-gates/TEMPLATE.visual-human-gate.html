@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Human Gate — visual companion</title>
+<!--
+  TEMPLATE.visual-human-gate.html — Teamcell Lite portable template.
+
+  This file is a STATIC HUMAN-RENDERING COMPANION, not the source of truth.
+  The canonical decision record is the Markdown file at
+  human-gates/<GATE-ID>.md (or this Lite cell's equivalent human-gates surface),
+  built from human-gates/TEMPLATE.human-gate.md.
+  This HTML never carries decision authority. If this page and the Markdown gate
+  ever disagree, the Markdown wins.
+
+  To produce a companion for a real gate:
+    1. Copy this file to human-gates/<GATE-ID>.html in this cell.
+    2. Replace ONLY the JSON inside <script type="application/json" id="gate-payload">
+       with that gate's fill-contract payload (the example payload below
+       shows every field; values mirror the Markdown gate's frontmatter
+       and sections).
+    3. Do not edit the markup, CSS, or renderer script below the payload block.
+
+  No network calls, no write path, no external CSS/JS/fonts — this file must render
+  correctly opened directly from disk (file://) with zero dependencies.
+-->
+<style>
+  :root{
+    --bg:#0c1016; --panel:#141a24; --panel2:#1b2330; --hair:#2a3444;
+    --text:#eef2f8; --dim:#93a3ba; --dimmer:#6c7d95;
+    --amber:#ffb454; --teal:#4fe3d2; --green:#5bd89b; --red:#ff6a4a; --blue:#6aa6ff;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5;padding:28px 18px 80px}
+  .wrap{max-width:920px;margin:0 auto}
+  .badge{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.03em;padding:2px 8px;border-radius:999px;border:1px solid var(--hair);color:var(--dim)}
+  .badge.status-open{color:var(--amber);border-color:#5a4526}
+  .badge.status-resolved,.badge.status-approved{color:var(--green);border-color:#245c40}
+  .badge.urgency-blocking{color:var(--red);border-color:#5c2a1e}
+  .badge.urgency-high{color:var(--amber);border-color:#5a4526}
+  header.gate-head{border:1px solid var(--hair);background:var(--panel);border-radius:14px;padding:20px 22px;margin-bottom:18px}
+  .gate-id{font-family:var(--mono);font-size:12px;color:var(--dimmer)}
+  h1{font-size:22px;margin:6px 0 12px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .meta-row .kv{font-size:12.5px;color:var(--dim)}
+  .meta-row .kv b{color:var(--text);font-weight:600}
+  section{border:1px solid var(--hair);background:var(--panel);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+  section h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);margin:0 0 12px}
+  .question{font-size:17px;font-weight:600}
+  .rec{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+  .rec .pill{font-family:var(--mono);font-size:12px;color:var(--teal);border:1px solid #1c4a44;background:#0f231f;border-radius:8px;padding:4px 10px}
+  .rec .why{color:var(--dim);font-size:13.5px}
+  .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+  .opt{border:1px solid var(--hair);background:var(--panel2);border-radius:10px;padding:12px 14px}
+  .opt.is-recommended{border-color:#1c4a44;background:#0f231f}
+  .opt .opt-id{font-family:var(--mono);font-size:12px;color:var(--teal)}
+  .opt .opt-label{font-weight:600;margin:4px 0 8px;font-size:14px}
+  .opt dl{margin:0;font-size:12.5px;color:var(--dim)}
+  .opt dt{color:var(--dimmer);margin-top:6px}
+  .opt dd{margin:1px 0 0}
+  .impact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .impact-col .impact-label{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--dimmer);margin-bottom:6px}
+  .impact-col ul{margin:0;padding-left:16px;font-size:13px;color:var(--text)}
+  .impact-col.empty .impact-label{opacity:.5}
+  table.evidence{width:100%;border-collapse:collapse;font-size:13px}
+  table.evidence th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--dimmer);padding:0 8px 8px 0}
+  table.evidence td{padding:8px 8px 8px 0;border-top:1px solid var(--hair);vertical-align:top}
+  table.evidence .path{font-family:var(--mono);font-size:12.5px;color:var(--blue)}
+  table.evidence .sha{font-family:var(--mono);font-size:12px;color:var(--dimmer)}
+  table.evidence .sha.unverified{color:var(--amber)}
+  ul.plain{margin:0;padding-left:18px;font-size:13.5px;color:var(--text)}
+  .capture-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+  .capture{border:1px solid var(--hair);background:var(--panel2);border-radius:10px;padding:12px 14px}
+  .capture .cap-label{font-family:var(--mono);font-size:12px;color:var(--text);text-transform:uppercase}
+  .capture .cap-effect{font-size:13px;color:var(--dim);margin:6px 0}
+  .capture ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--dim)}
+  .copy-row{margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  button.copy-btn{font:inherit;font-size:13px;background:var(--teal);color:#06201c;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600}
+  button.copy-btn:active{transform:translateY(1px)}
+  .copy-status{font-size:12.5px;color:var(--dimmer)}
+  textarea.copy-fallback{width:100%;min-height:120px;margin-top:10px;background:var(--bg);color:var(--text);border:1px solid var(--hair);border-radius:8px;font-family:var(--mono);font-size:12px;padding:10px;display:none}
+  .dispatch-item{font-size:13.5px;padding:8px 0;border-top:1px solid var(--hair)}
+  .dispatch-item:first-child{border-top:none}
+  .dispatch-item .if{font-family:var(--mono);font-size:11px;color:var(--dimmer);text-transform:uppercase}
+  footer.canonical-note{font-size:12.5px;color:var(--dimmer);border-top:1px solid var(--hair);padding-top:16px;margin-top:8px}
+  footer.canonical-note a{color:var(--blue)}
+  .empty-note{color:var(--dimmer);font-size:13px;font-style:italic}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="gate-head">
+    <div class="gate-id" data-field="gate_id">HUMAN-GATE-YYYYMMDD-slug</div>
+    <h1 data-field="title">Decision title</h1>
+    <div class="meta-row">
+      <span class="badge" data-field-class="status" data-field="status">status</span>
+      <span class="badge" data-field-class="urgency" data-field="urgency">urgency</span>
+      <span class="kv">Owner: <b data-field="owner">—</b></span>
+      <span class="kv">Blocking: <b data-field="blocking_scope">—</b></span>
+      <span class="kv" data-field-group="reviewers">Reviewers: <b data-field="reviewers">—</b></span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Decision question</h2>
+    <div class="question" data-field="decision_question">One sentence question.</div>
+  </section>
+
+  <section>
+    <h2>Recommended option</h2>
+    <div class="rec">
+      <span class="pill">Option <span data-field="recommended_option.id">—</span> · confidence: <span data-field="recommended_option.confidence">—</span></span>
+      <span class="why" data-field="recommended_option.why_now">Why now.</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Options matrix</h2>
+    <div class="options" data-list="options" data-recommended-id-from="recommended_option.id">
+      <!-- option cards injected here -->
+    </div>
+  </section>
+
+  <section>
+    <h2>Impact map</h2>
+    <div class="impact-grid" data-impact-map="impact_map">
+      <!-- surfaces / files / tasks / agents / humans columns injected here -->
+    </div>
+  </section>
+
+  <section>
+    <h2>Evidence spine</h2>
+    <table class="evidence">
+      <thead><tr><th>Path</th><th>SHA</th><th>Purpose</th></tr></thead>
+      <tbody data-list="evidence"><!-- rows injected here --></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Boundary / non-goals</h2>
+    <ul class="plain" data-list="non_goals"><!-- items injected here --></ul>
+  </section>
+
+  <section>
+    <h2>Decision capture</h2>
+    <div class="capture-grid" data-capture="decision_capture"><!-- accept/revise/reject/defer cards injected here --></div>
+    <div class="copy-row">
+      <button class="copy-btn" id="copy-resolution" type="button">Copy resolution YAML for selected path</button>
+      <select id="capture-path-select" aria-label="Decision path to copy"></select>
+      <span class="copy-status" id="copy-status"></span>
+    </div>
+    <textarea class="copy-fallback" id="copy-fallback" readonly aria-label="Resolution YAML (manual copy fallback)"></textarea>
+  </section>
+
+  <section>
+    <h2>Follow-up dispatch</h2>
+    <div data-list="follow_up_dispatch"><!-- dispatch rows injected here --></div>
+  </section>
+
+  <footer class="canonical-note">
+    This page is a static, read-only human-rendering companion. It carries no decision
+    authority and is not the source of truth. The canonical, authoritative Human Gate
+    record for this Teamcell Lite cell is the Markdown built from
+    <code>TEMPLATE.human-gate.md</code>, at
+    <a data-field-href="source_markdown" data-field="source_markdown">human-gates/HUMAN-GATE-....md</a>.
+    Resolve, accept, revise, reject, or defer this gate only by editing that Markdown file.
+  </footer>
+
+</div>
+
+<script type="application/json" id="gate-payload">
+{
+  "gate_id": "HUMAN-GATE-YYYYMMDD-slug",
+  "title": "Decision title",
+  "decision_question": "One sentence question the gate must answer.",
+  "status": "open",
+  "urgency": "normal",
+  "blocking_scope": "none",
+  "owner": "Team or named human",
+  "reviewers": [],
+  "recommended_option": { "id": "A", "confidence": "medium", "why_now": "Replace with the actual why-now reason." },
+  "options": [
+    { "id": "A", "label": "Option A label", "tradeoff": "short tradeoff", "risk": "short risk", "reversibility": "moderate", "downstream_impact": "short impact" },
+    { "id": "B", "label": "Option B label", "tradeoff": "short tradeoff", "risk": "short risk", "reversibility": "easy", "downstream_impact": "short impact" }
+  ],
+  "impact_map": { "surfaces": [], "files": [], "tasks": [], "agents": [], "humans": [] },
+  "evidence": [
+    { "path": "path/to/source/artifact.md", "sha": "unverified", "purpose": "why this is evidence" }
+  ],
+  "non_goals": [],
+  "decision_capture": {
+    "accept": { "effect": "short effect string", "conditions": [] },
+    "revise": { "effect": "short effect string", "conditions": [] },
+    "reject": { "effect": "short effect string", "conditions": [] },
+    "defer":  { "effect": "short effect string", "conditions": [] }
+  },
+  "follow_up_dispatch": [
+    { "if": "accept", "task_or_action": "TASK-YYYYMMDD-NNN or free text", "note": "optional short note" }
+  ],
+  "source_markdown": "human-gates/HUMAN-GATE-YYYYMMDD-slug.md"
+}
+</script>
+
+<script>
+(function () {
+  "use strict";
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function get(obj, path) {
+    return path.split(".").reduce(function (o, k) { return (o && o[k] !== undefined) ? o[k] : undefined; }, obj);
+  }
+
+  var payload;
+  try {
+    payload = JSON.parse(document.getElementById("gate-payload").textContent);
+  } catch (e) {
+    document.body.innerHTML = "<p style='color:#ff6a4a;font-family:monospace;padding:24px'>Invalid gate-payload JSON: " + esc(e.message) + "</p>";
+    return;
+  }
+
+  // Simple scalar fields
+  document.querySelectorAll("[data-field]").forEach(function (el) {
+    var path = el.getAttribute("data-field");
+    var val = get(payload, path);
+    if (val === undefined || val === null || val === "") return;
+    if (Array.isArray(val)) {
+      el.textContent = val.length ? val.join(", ") : "—";
+    } else {
+      el.textContent = String(val);
+    }
+    var hrefField = el.getAttribute("data-field-href");
+    if (hrefField) el.setAttribute("href", String(get(payload, hrefField) || "#"));
+    var cls = el.getAttribute("data-field-class");
+    if (cls) el.classList.add(cls + "-" + String(val).toLowerCase().replace(/[^a-z0-9]+/g, "-"));
+  });
+
+  // Options matrix
+  var optionsHost = document.querySelector('[data-list="options"]');
+  if (optionsHost) {
+    var recId = get(payload, "recommended_option.id");
+    (payload.options || []).forEach(function (o) {
+      var card = document.createElement("div");
+      card.className = "opt" + (o.id === recId ? " is-recommended" : "");
+      card.innerHTML =
+        '<div class="opt-id">Option ' + esc(o.id) + (o.id === recId ? " · recommended" : "") + '</div>' +
+        '<div class="opt-label">' + esc(o.label || "") + '</div>' +
+        '<dl>' +
+          '<dt>Tradeoff</dt><dd>' + esc(o.tradeoff || "—") + '</dd>' +
+          '<dt>Risk</dt><dd>' + esc(o.risk || "—") + '</dd>' +
+          '<dt>Reversibility</dt><dd>' + esc(o.reversibility || "—") + '</dd>' +
+          '<dt>Downstream impact</dt><dd>' + esc(o.downstream_impact || "—") + '</dd>' +
+        '</dl>';
+      optionsHost.appendChild(card);
+    });
+  }
+
+  // Impact map
+  var impactHost = document.querySelector('[data-impact-map]');
+  if (impactHost) {
+    var map = payload.impact_map || {};
+    ["surfaces", "files", "tasks", "agents", "humans"].forEach(function (key) {
+      var items = map[key] || [];
+      var col = document.createElement("div");
+      col.className = "impact-col" + (items.length ? "" : " empty");
+      var label = key.charAt(0).toUpperCase() + key.slice(1);
+      col.innerHTML = '<div class="impact-label">' + esc(label) + '</div>' +
+        (items.length ? ('<ul>' + items.map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + '</ul>')
+                       : '<div class="empty-note">none</div>');
+      impactHost.appendChild(col);
+    });
+  }
+
+  // Evidence spine
+  var evidenceHost = document.querySelector('[data-list="evidence"]');
+  if (evidenceHost) {
+    (payload.evidence || []).forEach(function (e) {
+      var tr = document.createElement("tr");
+      var shaCls = (String(e.sha).toLowerCase() === "unverified") ? "sha unverified" : "sha";
+      tr.innerHTML =
+        '<td class="path">' + esc(e.path || "") + '</td>' +
+        '<td class="' + shaCls + '">' + esc(e.sha || "unverified") + '</td>' +
+        '<td>' + esc(e.purpose || "") + '</td>';
+      evidenceHost.appendChild(tr);
+    });
+    if (!(payload.evidence || []).length) {
+      evidenceHost.innerHTML = '<tr><td colspan="3" class="empty-note">none</td></tr>';
+    }
+  }
+
+  // Non-goals
+  var nonGoalsHost = document.querySelector('[data-list="non_goals"]');
+  if (nonGoalsHost) {
+    var goals = payload.non_goals || [];
+    nonGoalsHost.innerHTML = goals.length
+      ? goals.map(function (g) { return "<li>" + esc(g) + "</li>"; }).join("")
+      : '<li class="empty-note">none stated</li>';
+  }
+
+  // Decision capture cards + copy-resolution control
+  var captureHost = document.querySelector('[data-capture]');
+  var pathSelect = document.getElementById("capture-path-select");
+  var capture = payload.decision_capture || {};
+  var pathOrder = ["accept", "revise", "reject", "defer"];
+  if (captureHost) {
+    pathOrder.forEach(function (key) {
+      var c = capture[key];
+      if (!c) return;
+      var card = document.createElement("div");
+      card.className = "capture";
+      card.innerHTML =
+        '<div class="cap-label">' + esc(key) + '</div>' +
+        '<div class="cap-effect">' + esc(c.effect || "") + '</div>' +
+        (c.conditions && c.conditions.length
+          ? ('<ul>' + c.conditions.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul>')
+          : "");
+      captureHost.appendChild(card);
+      if (pathSelect) {
+        var opt = document.createElement("option");
+        opt.value = key; opt.textContent = key;
+        pathSelect.appendChild(opt);
+      }
+    });
+  }
+
+  function buildResolutionYaml(pathKey) {
+    var c = capture[pathKey] || {};
+    var lines = [
+      "gate_id: " + (payload.gate_id || ""),
+      "decision_date: <YYYY-MM-DD>",
+      "decided_by: <human name>",
+      "option_selected: " + pathKey,
+      "status: resolved",
+      "effect: " + (c.effect || ""),
+    ];
+    (c.conditions || []).forEach(function (cond) { lines.push("condition: " + cond); });
+    lines.push("source_markdown: " + (payload.source_markdown || ""));
+    return lines.join("\n");
+  }
+
+  var copyBtn = document.getElementById("copy-resolution");
+  var copyStatus = document.getElementById("copy-status");
+  var copyFallback = document.getElementById("copy-fallback");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function () {
+      var key = pathSelect && pathSelect.value ? pathSelect.value : pathOrder[0];
+      var text = buildResolutionYaml(key);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          copyStatus.textContent = "Copied " + key + " resolution to clipboard.";
+        }, function () {
+          copyFallback.style.display = "block";
+          copyFallback.value = text;
+          copyStatus.textContent = "Clipboard blocked — copy manually below.";
+        });
+      } else {
+        copyFallback.style.display = "block";
+        copyFallback.value = text;
+        copyStatus.textContent = "Clipboard unavailable — copy manually below.";
+      }
+    });
+  }
+
+  // Follow-up dispatch
+  var dispatchHost = document.querySelector('[data-list="follow_up_dispatch"]');
+  if (dispatchHost) {
+    var dispatches = payload.follow_up_dispatch || [];
+    dispatchHost.innerHTML = dispatches.length
+      ? dispatches.map(function (d) {
+          return '<div class="dispatch-item"><span class="if">if ' + esc(d.if || "") + '</span> → ' +
+                 esc(d.task_or_action || "") + (d.note ? (" — " + esc(d.note)) : "") + '</div>';
+        }).join("")
+      : '<div class="empty-note">none</div>';
+  }
+})();
+</script>
+</body>
+</html>

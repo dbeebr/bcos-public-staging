@@ -1,0 +1,81 @@
+---
+bcos_type: doc
+id: ONBOARDING
+title: "{{CELL_NAME}} — start here"
+status: draft
+created: YYYY-MM-DD
+created_by: human-or-agent
+created_by_type: human | agent | system
+created_by_id: human:<id> | agent:<id>
+created_by_display: "Display Name"
+created_by_github: <github-username> | null
+on_behalf_of_human_id: human:<id> | null
+agent_id: agent:<id> | null
+agent_model: human-or-model
+agent_capability_class: local-worker | git-only-worker | chat-reviewer | read-only-observer | automation | null
+---
+
+<!-- INSTALL TODO: this file ships with {{PLACEHOLDER}} markers and status:
+     draft. Fill in every {{...}} below, set status: active, and fill in the
+     frontmatter above before treating this as ready for onboarding — an
+     unfilled copy of this file reads as broken to a new teammate. install-plus-profile.sh
+     does not auto-substitute these; a human or agent session must. -->
+
+# {{CELL_NAME}} — start here
+
+_A one-page guide. No BCOS ontology required._
+
+## 1. What is this Cell?
+
+{{CELL_PURPOSE_ONE_SENTENCE}}
+
+## 2. What do I do here?
+
+- Capture a thought → [`inbox/INBOX.md`](inbox/INBOX.md)
+- Do work → [`work/`](work/)
+- Decide something costly or hard to reverse → [`human-gates/`](human-gates/)
+
+## 3. Where do I capture a thought?
+
+Append a dated entry to [`inbox/INBOX.md`](inbox/INBOX.md). Nothing else
+required.
+
+## 4. Where are active work and decisions?
+
+Open items: [`work/`](work/). Closed items and decisions: [`history/`](history/).
+
+## 5. What may agents do?
+
+Write to `work/`, `inbox/`, `history/`, and propose `human-gates/` entries.
+Agents never close a Human Gate and never change `TEAM-PROFILE.md` without a
+human decision recorded there.
+
+## 6. How do I see what changed?
+
+Open the latest **Cell Update** — a GitHub Issue labeled `cell-update` in
+this repo. {{LATEST_CELL_UPDATE_LINK}}
+
+## 7. How will I be notified?
+
+A native GitHub notification (mobile, email, or web) when you're mentioned
+on a Cell Update Issue, or when the repo publishes an update you're watching.
+
+## 8. How do I respond?
+
+Comment on the Issue, or react (👍/👎) for a quick yes/no. No governance file
+editing required.
+
+## 9. Where does my response go?
+
+A human (or a later Git-verified agent session) reads the Issue thread and
+routes it into the `work/` item or `human-gates/` entry it concerns. The
+Issue itself stays as the durable record — it is never a second source of
+truth for what actually happened (that's still the Completion Record).
+
+## 10. What do I do in the first 15 minutes?
+
+1. Read this page.
+2. Open the pinned Cell Update Issue.
+3. Look at [`work/`](work/) for anything assigned to you.
+4. Write one line in [`inbox/INBOX.md`](inbox/INBOX.md) about what you're
+   starting.

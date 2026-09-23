@@ -85,6 +85,11 @@ This document defines the minimum public vocabulary for **BCOS — Base Context 
 - `context_package`
 - `evidence_required`
 
+`capability_class` is the access the agent actually has in the session, not
+its product name: `local-worker`, `git-only-worker`, `chat-reviewer`,
+`read-only-observer`, or `automation` for unattended scripts (see
+`schemas/routing-frontmatter.schema.md`).
+
 **Neutral example:** "A local coding agent that can edit files and commit changes after validation."
 
 **What it is not:** An authority source. Agents can propose and execute inside boundaries; they do not become truth by speaking.

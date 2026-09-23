@@ -6,7 +6,9 @@ This extraction package (`public-extraction/`) is the curated public surface of
 BCOS v0.1. It includes:
 
 - **`README.md`** — Public overview and quickstart
-- **`LICENSE`** — CC BY 4.0 for all docs, templates, and examples
+- **`LICENSE`** — index: MIT for the operative Teamcell Lite Cell package
+  (`distribution/`, `scripts/`, `schemas/`), CC BY 4.0 for docs, templates,
+  and examples (unchanged); full texts in `LICENSES/`
 - **`CONTRIBUTING.md`** — Contribution guidelines
 - **`CODE_OF_CONDUCT.md`** — Community conduct policy
 - **`SECURITY.md`** — Security disclosure policy

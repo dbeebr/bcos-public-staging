@@ -16,6 +16,88 @@ knowledge."
 A Cell is a Git repository. Private by default — publishing anything is a
 separate, gated decision (`public-private-boundary.md`).
 
+## Install path: a ready Teamcell Lite Cell
+
+The fastest way to a working Cell is the Teamcell Lite kit in
+`distribution/teamcell-lite/`. It ships the core tier, a validator, a daily
+start command and optional packages, and it installs from a plain clone of
+this repository — no account, token or private repository needed.
+
+**Requirements:** Git with your name and e-mail configured
+(`git config --global user.name ...` / `user.email ...`), Python 3 with
+PyYAML (`python3 -m pip install --user pyyaml`), a POSIX shell. The GitHub CLI
+is not needed. This release candidate was tested on macOS only (Python 3.12
+with PyYAML 6; the Cell-side instruction renderer and validators also with
+the macOS system Python 3.9 without PyYAML). Linux and WSL on Windows are
+expected to behave the same but were not run for this release.
+
+Run these commands exactly as written; only change the value of `MY_ID`:
+
+<!-- quickstart:start -->
+```sh
+# Your stable participant id: lowercase letters, digits and hyphens.
+MY_ID='your-name'
+
+git clone https://github.com/dbeebr/bcos-public-staging.git bcos
+cd bcos
+
+# 1. Preview: writes nothing. Optional packages: add
+#    --optional-package teamcell-plus-profile, or
+#    --optional-package team-capability-pack (selects Plus too).
+python3 scripts/teamcell-install-preview.py ../my-cell --mode new_from_template
+
+# 2. Read the preview (source, kit integrity, packages, files, governance),
+#    then confirm exactly that target: the same command plus --confirm.
+python3 scripts/teamcell-install-preview.py ../my-cell --mode new_from_template \
+  --confirm --confirmed-by "human:$MY_ID"
+
+# 3. Write the durable installation receipt.
+python3 scripts/generate-teamcell-installation-receipt.py ../my-cell
+
+# 4. Commit the installed Cell, then start it.
+cd ../my-cell
+git add -A
+git commit -m "Install Teamcell Lite"
+./scripts/start-cell.sh
+```
+<!-- quickstart:end -->
+
+Optional, interactive — generate the project instruction block for your
+agents (ChatGPT, Claude, Copilot, Gemini or a local model host), rendered
+from the Cell's one shared instruction core, with its procedure index and a
+ChatGPT size check; then commit the generated files:
+
+```sh
+../bcos/scripts/personalize-team-cell.sh "$PWD"
+```
+
+Then replace the fictional example team in `TEAM-PROFILE.md`, select a
+governance profile in `.bcos/CELL-GOVERNANCE.yaml` when ready, and create
+your first work item as `work/TASK-YYYYMMDD-NNN-<slug>.md` from
+`work/TEMPLATE.task.md`. It is executable once
+`python3 scripts/validate-completion.py --ready <path>` reports READY; what
+nobody knows yet stays marked `OPEN: ...` instead of being guessed.
+
+What each step guarantees:
+
+- The preview never writes. A non-empty target, an unknown package or an
+  ambiguous request is refused before anything is created.
+- The preview shows `kit_integrity`: `verified` when the kit matches
+  `distribution/teamcell-lite/SOURCE-MANIFEST.json`, otherwise the receipt
+  records the version as `+local-modifications`.
+- The receipt records source commit, version, packages and every installed
+  file; it refuses when packages and files disagree with the tree.
+- This distribution installs new Cells only (`new_from_template`). It
+  refuses `hydrate_existing_repo` (known defect in this release: its
+  post-install closeout fails after files were written) and
+  `clone_existing_cell` (not validated) before anything is previewed or
+  written; see `teamcell-install-semantics.md`.
+- Running `scripts/bootstrap-team-cell.sh` directly is not a supported entry
+  point — it skips preview, confirmation, governance file and receipt.
+
+The rest of this page describes the manual path: building the same core tier
+by hand, which is also how to understand what the kit contains.
+
 ## 2. Lay down the core tier
 
 Every Cell starts with five files and six folders:
@@ -29,8 +111,9 @@ TEAM.md            ← who participates, who decides
 inbox/     work/     human-gates/     history/     playbooks/     scripts/
 ```
 
-Copy the templates from `templates/` in this starter, or copy the whole
-`examples/setbrain-cell/` and replace its fictional content. Put artifact
+Install the Teamcell Lite kit (above), copy the templates from `templates/`
+in this starter, or copy the whole `examples/setbrain-cell/` and replace its
+fictional content. Put artifact
 templates *in-surface* (`work/TEMPLATE.task.md`,
 `human-gates/TEMPLATE.human-gate.md`) — that is where agents look.
 
@@ -85,8 +168,11 @@ decision record.
 An agent entering a well-formed Cell needs no briefing:
 
 ```text
-read CONTEXT_INDEX.md → read AGENTS.md → read the assigned task
-→ do only what the task allows → append the Completion Record → commit
+read the Cell entry (AGENTS.md → PROJECT.md → CONTEXT_INDEX.md)
+→ read the assigned task → run its format check (validate-completion.py
+--ready; stop on open items) → check the Procedure Index, load matching
+procedures in full → do only what the task allows → append the Completion
+Record (with the procedures actually applied) → commit
 ```
 
 If your agent needs more than that to be safe, the fix is a better task file

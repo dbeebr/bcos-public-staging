@@ -1,0 +1,62 @@
+# Cell instruction profile — the verified, Cell-specific facts the shared
+# instruction core (templates/PROJECT-INSTRUCTIONS.template.md) is rendered
+# with by scripts/render-instructions.py. Rules live in the core and in
+# AGENTS.md, never here. Change this file only when the Cell's real entry,
+# routing or procedure locations change; ./scripts/validate-cell.sh checks
+# that every path named here exists.
+schema_version: "1"
+cell_kind: teamcell-lite
+
+# Read in this order before planning or changing anything; the assigned
+# work item or gate comes next, then the procedures it needs.
+session_entry:
+  - AGENTS.md
+  - PROJECT.md
+  - CONTEXT_INDEX.md
+
+task_path: work/TASK-YYYYMMDD-NNN-<slug>.md
+# The Cell's current task format. A planner with repository access reads it
+# here; a planning context pack (render-instructions.py context-pack --role
+# planner) carries it verbatim with its sha256 and Git blob.
+task_template: work/TEMPLATE.task.md
+# Format check a persisted task must pass before execution starts ({task} =
+# its path). --fix fills only rule-derivable technical fields; missing
+# content, identity, IDs or approvals keep the task a non-executable draft.
+task_check: "python3 scripts/validate-completion.py --ready {task}"
+closing_record: "the Completion Record in the work item (fields in work/TEMPLATE.task.md)"
+learning_target: "a follow-up work item in work/"
+
+# Compact routing for rendered instruction blocks; CONTEXT_INDEX.md
+# "Artifact Routing" holds the full table.
+routing:
+  - intent: raw input
+    target: inbox/INBOX.md
+  - intent: executable work
+    target: work/
+  - intent: human decision
+    target: human-gates/
+  - intent: evidence, review or accepted decision
+    target: history/
+  - intent: reusable procedure
+    target: playbooks/
+
+# Where procedures live. Each procedure file carries its own index metadata
+# in frontmatter (id, procedure_kind, use_when, not_when, phase, package,
+# status); only status: active files are available. The generated
+# "Procedure Index" section of CONTEXT_INDEX.md is derived from them.
+# sub_index names where a group's full entries stay reachable when a
+# budgeted render (e.g. ChatGPT) must route the group instead of listing it.
+procedure_index: CONTEXT_INDEX.md
+procedure_sources:
+  - glob: playbooks/*.playbook.md
+    exclude: [TEMPLATE*]
+    kind: playbook
+    package: teamcell-lite-baseline
+    sub_index: CONTEXT_INDEX.md
+  - glob: history/learning-candidates/README.md
+    kind: workflow
+    package: teamcell-plus-profile
+  - glob: apps/team-capability-pack/skills/*.skill.md
+    kind: skill
+    package: team-capability-pack
+    sub_index: apps/team-capability-pack/CONTEXT_INDEX.md

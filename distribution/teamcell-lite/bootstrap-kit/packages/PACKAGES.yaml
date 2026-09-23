@@ -1,0 +1,76 @@
+# Teamcell Lite package manifest — machine-readable, parsed directly by the
+# installer (scripts/teamcell-install-preview.py in the Teamcell
+# distribution) and cross-checked structurally by scripts/validate-cell.sh
+# in every installed Cell. The baseline package installs this file into the
+# Cell as reference metadata.
+#
+# Schema: schemas/teamcell-package-manifest.schema.md (Teamcell distribution)
+#
+# Ownership is expressed as source-root prefixes, not an exhaustive file
+# list — adding a file inside an already-declared source_root (outside a
+# nested exclude_source_roots) never requires editing this manifest.
+schema_version: "0.1"
+packages:
+  - package_id: teamcell-lite-baseline
+    optional: false
+    depends_on: []
+    source_root: "."
+    target_root: "."
+    exclude_source_roots:
+      - "profiles/plus"
+    onboarding_entries:
+      - playbooks/onboarding/START-HERE.html
+      - playbooks/onboarding/TEAMCELL-LITE-INTRO.html
+    description: >-
+      Everything in this template's root except profiles/plus (distribution
+      source material for the two optional packages below, never installed
+      by default). Always installed. Copied 1:1, same relative path.
+
+  - package_id: teamcell-plus-profile
+    optional: true
+    depends_on: []
+    source_root: "profiles/plus"
+    target_root: "."
+    exclude_source_roots:
+      - "profiles/plus/apps/team-capability-pack"
+    installer: profiles/plus/scripts/install-plus-profile.sh
+    onboarding_entries: []
+    description: >-
+      Additive overlay (scripts/post-cell-update.sh, scripts/morning-pulse.sh,
+      scripts/validate-cell-plus.sh, docs/CONTRACTS-V1.md, ONBOARDING.md,
+      history/learning-candidates/README.md). Never rewrites a baseline
+      file except one CONTEXT_INDEX.md append. Its installer is the source
+      of truth for the files it writes (`--print-targets`), not a 1:1 copy
+      of this source root.
+
+  - package_id: team-capability-pack
+    optional: true
+    depends_on:
+      - teamcell-plus-profile
+    source_root: "profiles/plus/apps/team-capability-pack"
+    target_root: "apps/team-capability-pack"
+    exclude_source_roots: []
+    installer: profiles/plus/scripts/install-capability-pack.sh
+    onboarding_entries:
+      - playbooks/onboarding/SKILL-PLAYGROUND.html
+    onboarding_source: profiles/plus/apps/team-capability-pack/onboarding/SKILL-PLAYGROUND.html
+    description: >-
+      Optional, explicitly opt-in Plus app (three bounded skills); its
+      installer lists the files it writes with `--print-targets`. Its
+      onboarding page assumes Plus and this pack are both installed, so it
+      is sourced from this package's own source root and only copied to
+      playbooks/onboarding/SKILL-PLAYGROUND.html when this package is
+      selected. Selecting this package auto-selects teamcell-plus-profile.
+
+# Reconciliation rule (enforced by scripts/validate-cell.sh in every
+# installed Cell, re-derived structurally rather than by parsing this file
+# at runtime):
+#   - profiles/ never present in an installed Cell (it is distribution
+#     source material; the Plus installer copies its contents to their
+#     target paths);
+#   - apps/team-capability-pack/ present iff team-capability-pack installed;
+#   - playbooks/onboarding/SKILL-PLAYGROUND.html present iff
+#     team-capability-pack installed;
+#   - ONBOARDING.md and docs/CONTRACTS-V1.md present iff
+#     teamcell-plus-profile installed.
+# A mismatch in either direction is a validator FAIL, not a warning.

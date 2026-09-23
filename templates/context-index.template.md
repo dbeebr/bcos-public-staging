@@ -1,8 +1,12 @@
 ---
 bcos_type: index
 id: CONTEXT-INDEX-{{CELL-ID}}
+title: "Context Index — {{Cell Name}}"
+status: active
+created: {{YYYY-MM-DD}}
+created_by: {{human-or-agent-id}}
+surface: project
 purpose: {{Brief description of what this Cell does}}
-created_at: {{YYYY-MM-DD}}
 updated_at: {{YYYY-MM-DD}}
 ---
 
@@ -30,6 +34,18 @@ Read these first when entering this Cell:
 | Continuing from a handoff | The handoff record, then entry points |
 | Making a decision | `templates/decision.template.md`, plus relevant prior decisions |
 | Reviewing completion | The task file, then `templates/proof.template.md` |
+
+## Procedure Index
+
+Reusable procedures available in this Cell. Check this list when a task
+starts, at a handover, at a phase change and when a new finding appears;
+load the full file before applying an entry. (A Teamcell Lite Cell generates
+this section from each procedure's frontmatter with
+`scripts/render-instructions.py index --write`.)
+
+| ID | Kind | Use when | Not when | Phase | Path |
+|---|---|---|---|---|---|
+| {{PROCEDURE-ID}} | {{skill / playbook / workflow}} | {{concrete situation}} | {{nearest situation where it does not apply}} | {{plan / execute / close}} | `{{playbooks/name.playbook.md}}` |
 
 ## Do Not Load by Default
 

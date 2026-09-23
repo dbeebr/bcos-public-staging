@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<!-- Teamcell Skill Playground — SKILL-PLAYGROUND.html -->
+<!-- Lives here (profiles/plus/apps/team-capability-pack/onboarding/), not
+     under playbooks/onboarding/, because it is team-capability-pack's own
+     onboarding page (packages/PACKAGES.yaml onboarding_source), not
+     baseline content. scripts/install-capability-pack.sh copies it to the
+     installed Cell's playbooks/onboarding/SKILL-PLAYGROUND.html only when
+     this optional package is selected. Its "../../"-relative links below assume that installed
+     location (two levels above playbooks/onboarding/), not this source
+     location. -->
+<!-- Generic template — assumes the Teamcell Plus profile and the optional
+     Team Capability Pack app are installed in the target Cell. Some links
+     below (ONBOARDING.md, apps/team-capability-pack/*, apps/brand-brain/*,
+     history/learning-candidates/) resolve only once installed — see the
+     README note at the very bottom of this file for details. -->
+<!-- FORK: if you adapt this for a specific organisation, add a FORK comment
+     here and keep client content out of this canonical template repo. -->
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teamcell Skill Playground</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --accent:      #f5c842;
+    --accent-dk:   #c9a115;
+    --bg:          #fafaf8;
+    --panel-bg:    #ffffff;
+    --text:        #1a1a1a;
+    --muted:       #555555;
+    --code-bg:     #f0ede6;
+    --border:      #e0ddd6;
+    --focus:       #0b57d0;
+    --good:        #1a6e3c;
+    --warn:        #8a5a00;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #171612;
+      --panel-bg:  #221f19;
+      --text:      #f2efe8;
+      --muted:     #c9c3b5;
+      --code-bg:   #2b2721;
+      --border:    #3a352c;
+      --focus:     #7fb0ff;
+      --good:      #6fd196;
+      --warn:      #f0c060;
+    }
+  }
+
+  html {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  body { margin: 0; padding: 0 0 4rem; }
+
+  a { color: var(--focus); }
+  a:visited { color: var(--focus); }
+
+  main { max-width: 900px; margin: 0 auto; padding: 0 1.25rem; }
+
+  h1, h2, h3, h4 { line-height: 1.25; }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--panel-bg);
+    color: var(--text);
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--focus);
+    z-index: 100;
+  }
+  .skip-link:focus { left: 1rem; top: 1rem; }
+
+  /* ── Hero ─────────────────────────────────────────────────────── */
+  header.hero {
+    background: var(--panel-bg);
+    border-bottom: 4px solid var(--accent);
+    padding: 2.5rem 1.25rem 2rem;
+    text-align: center;
+  }
+  header.hero .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-dk);
+    margin: 0 0 0.75rem;
+  }
+  header.hero h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    margin: 0 0 0.75rem;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+  header.hero p.sub {
+    max-width: 42rem;
+    margin: 0 auto;
+    color: var(--muted);
+  }
+
+  /* ── Sections ─────────────────────────────────────────────────── */
+  section { margin: 2.75rem 0; }
+  section > h2 {
+    font-size: 1.4rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.4rem;
+  }
+
+  .quicklinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    justify-content: center;
+    padding: 1rem 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  .quicklinks a { text-decoration: underline; }
+
+  /* ── VS Code workflow steps ───────────────────────────────────── */
+  ol.workflow-steps {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  ol.workflow-steps li {
+    counter-increment: step;
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1rem 0.9rem 3rem;
+    position: relative;
+  }
+  ol.workflow-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0.9rem;
+    top: 0.85rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #1a1a1a;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Cards ────────────────────────────────────────────────────── */
+  .cards {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+  article.card {
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    position: relative;
+  }
+  article.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 10px 10px 0 0;
+    background: var(--accent);
+  }
+  article.card h3 { margin-top: 0.4rem; }
+  article.card .skill-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-dk);
+    margin-bottom: 0.3rem;
+  }
+  article.card .not-decide {
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.92rem;
+    margin: 0.75rem 0 1rem;
+  }
+
+  .prompt-block { margin: 1rem 0; }
+  .prompt-block textarea {
+    width: 100%;
+    min-height: 260px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    padding: 0.85rem;
+    background: var(--code-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    resize: vertical;
+  }
+  .prompt-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  button.copy-btn {
+    background: var(--accent);
+    border: 1px solid var(--accent-dk);
+    color: #1a1a1a;
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  button.copy-btn:hover { background: var(--accent-dk); }
+  button.copy-btn.copied { background: var(--good); border-color: var(--good); color: #fff; }
+  @media (prefers-reduced-motion: no-preference) {
+    button.copy-btn { transition: background-color 0.15s ease; }
+  }
+  .copy-status {
+    font-size: 0.85rem;
+    color: var(--good);
+    font-weight: 600;
+  }
+  .nojs-hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  details.expected-result {
+    margin-top: 1rem;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+  }
+  details.expected-result summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  details.expected-result dl { margin: 0.75rem 0 0.25rem; }
+  details.expected-result dt { font-weight: 600; margin-top: 0.6rem; }
+  details.expected-result dd { margin: 0.15rem 0 0; color: var(--muted); }
+  .wrong-turn {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    background: rgba(138, 90, 0, 0.08);
+    border-left: 3px solid var(--warn);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.9rem;
+  }
+
+  /* ── Skill chain diagram ──────────────────────────────────────── */
+  .chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .chain .node {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.88rem;
+    text-align: center;
+  }
+  .chain .node.emph {
+    border-color: var(--accent-dk);
+    font-weight: 700;
+  }
+  .chain .arrow {
+    font-size: 1.2rem;
+    color: var(--muted);
+  }
+
+  /* ── Improve-the-skill section ────────────────────────────────── */
+  .concepts {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin: 1rem 0 1.5rem;
+  }
+  .concepts .concept {
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+  }
+  .concepts .concept h4 { margin: 0 0 0.35rem; font-size: 0.95rem; }
+  .concepts .concept p { margin: 0; font-size: 0.87rem; color: var(--muted); }
+
+  .loop-diagram {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* ── Links section ────────────────────────────────────────────── */
+  ul.link-list { padding-left: 1.2rem; }
+  ul.link-list li { margin: 0.35rem 0; }
+  ul.link-list code { font-size: 0.85rem; }
+  .conditional-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  footer {
+    max-width: 900px;
+    margin: 3rem auto 0;
+    padding: 1.25rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  noscript .nojs-banner {
+    display: block;
+    max-width: 900px;
+    margin: 1rem auto 0;
+    padding: 0.75rem 1rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+  }
+
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="hero">
+  <p class="eyebrow">Team Capability Pack — Skill Playground</p>
+  <h1>Drei Skills. Drei echte Aufgaben. Direkt ausprobieren.</h1>
+  <p class="sub">
+    Business Analyst, Requirements Engineering und Team Event Planner sind
+    installiert und einsatzbereit. Diese Seite zeigt in unter 60 Sekunden, wie
+    ihr sie in VS Code mit echtem Repo-Kontext ausprobiert — und wie ihr sie
+    sicher weiterentwickelt, ohne Evidence-, Human-Gate- oder
+    Nicht-Autoritäts-Regeln zu verwässern.
+  </p>
+</header>
+
+<noscript>
+  <p class="nojs-banner">
+    JavaScript ist deaktiviert — das ist kein Problem. Jeder Prompt unten
+    steht in einem normalen Textfeld: Text markieren
+    (Klick hinein, dann <kbd>Cmd/Strg</kbd>+<kbd>A</kbd>) und mit
+    <kbd>Cmd/Strg</kbd>+<kbd>C</kbd> kopieren. Die "Prompt kopieren"-Buttons
+    sind nur ein progressives Extra, keine Voraussetzung.
+  </p>
+</noscript>
+
+<main id="main-content">
+
+  <nav class="quicklinks" aria-label="Quick links">
+    <a href="#workflow">VS-Code-Ablauf</a>
+    <a href="#cards">Drei Use Cases</a>
+    <a href="#chain">Skill-Kette</a>
+    <a href="#improve">Skill verbessern</a>
+    <a href="#links">Weiterführende Links</a>
+  </nav>
+
+  <section id="workflow" aria-labelledby="workflow-h">
+    <h2 id="workflow-h">So probiert ihr einen Skill in VS Code aus</h2>
+    <ol class="workflow-steps">
+      <li>Use Case unten wählen und den vollständigen Prompt kopieren.</li>
+      <li>VS Code im Cell-Repo öffnen (mit vollem Repo-Kontext, nicht in einem leeren Chat).</li>
+      <li>Prompt an euren Agenten (z. B. Claude Code, Codex) einfügen und ausführen.</li>
+      <li>Den gerouteten Artefakt-Ort prüfen: <code>work/</code>, <code>human-gates/</code>, <code>history/learning-candidates/</code>, ein Completion Record oder ein Cell Update.</li>
+      <li>Ergebnis mit dem "Expected result"-Abschnitt der Karte abgleichen.</li>
+      <li>Beobachtung machen? Weiter zu <a href="#improve">Skill verbessern</a> — nicht direkt die Skill-Datei editieren.</li>
+    </ol>
+  </section>
+
+  <section id="cards" aria-labelledby="cards-h">
+    <h2 id="cards-h">Drei echte Use Cases</h2>
+    <div class="cards">
+
+      <!-- CARD 1: Requirements Engineering -->
+      <article class="card" aria-labelledby="card-re-h">
+        <p class="skill-tag">Requirements Engineering</p>
+        <h3 id="card-re-h">Kündiger Self-Service-Strecke mit Angebotssteuerung</h3>
+        <p class="not-decide">
+          <strong>Was der Skill tut:</strong> verwandelt eine bereits akzeptierte
+          Entscheidung in eine testbare, rückverfolgbare Spezifikation.
+          <strong>Was der Skill nicht entscheidet:</strong> ob die Strecke überhaupt
+          gebaut wird, und keine kommerziellen Angebotswerte (Bonushöhe,
+          Berechtigungsschwellen, Freigabe) — das bleibt bei einem Menschen.
+        </p>
+
+        <div class="prompt-block">
+          <h4 id="prompt-re-label">Vollständiger Copy/Paste-Prompt (Deutsch)</h4>
+          <textarea id="prompt-re" readonly aria-labelledby="prompt-re-label">Rolle & Kontext:
+Du arbeitest in diesem Cell-Repository (VS Code, mit vollem Repo-Kontext).
+Lies zuerst apps/team-capability-pack/CONTEXT_INDEX.md und lade darüber
+AUSSCHLIESSLICH apps/team-capability-pack/skills/REQUIREMENTS-ENGINEERING.skill.md.
+Lade keinen der beiden anderen Skills parallel. Lade apps/brand-brain/CONTEXT_INDEX.md
+nur, falls Ton, Wording oder Journey-Aspekte der Strecke wirklich betroffen sind —
+und dann nur die dort verlinkte Einzeldatei, nie den gesamten Brand Brain.
+
+Akzeptierte Entscheidung:
+Die zu spezifizierende Entscheidung/Outcome ist:
+[[VARIABLE: Referenz auf akzeptierte Entscheidung/WorkItem/Human-Gate-Ergebnis,
+z. B. Pfad zu work/... oder human-gates/...]]
+Wenn diese Referenz fehlt oder nicht wirklich akzeptiert ist, stoppe wie im
+Skill vorgeschrieben und benenne das explizit als fehlende akzeptierte Quelle
+— erfinde keine Akzeptanz.
+
+Aufgabe:
+Entwirf und übergib die Spezifikation für eine Kündiger Self-Service-Strecke
+(Cancellation Self-Service Funnel) mit intelligenter Angebotssteuerung zur
+Bindung (Retention-Offer-Steering) für folgenden Zielbereich:
+[[VARIABLE: betroffene Vertragsarten/Kundensegmente, z. B. "alle aktiven
+Verträge mit Kündigungsrecht"]]
+
+Decke mindestens ab:
+1. Funnel-Zustände und Übergänge (z. B. Start -> Kündigungsgrund erfassen ->
+   Angebotssteuerung -> Annahme/Ablehnung -> Bestätigung -> Exit), jeweils mit
+   Ein-/Ausstiegsbedingungen.
+2. Intelligente Angebotssteuerung: Eligibility (Berechtigung), Exclusions
+   (Ausschlüsse), Ranking mehrerer möglicher Angebote, Fallback-Reihenfolge,
+   und der explizite No-Offer-Pfad (kein Angebot verfügbar/zulässig).
+3. Stabile Anforderungs-IDs (REQ-<slug>-NNN) mit Rückverfolgbarkeit zur
+   akzeptierten Quelle für jede einzelne Anforderung.
+4. Trennung von akzeptierten Anforderungen, Annahmen (Assumptions),
+   Randbedingungen (Constraints) und offenen Fragen (Open Conflicts) —
+   niemals vermischt.
+5. Funktionale und nicht-funktionale Anforderungen (nur was wirklich zutrifft
+   — z. B. Performance/Verfügbarkeit, Datenschutz, Barrierefreiheit,
+   Zuverlässigkeit; nicht künstlich auffüllen).
+6. Messbare Abnahmekriterien pro Anforderung.
+7. Daten/API-Bedarf, Tracking-Events, Consent-Handling, Barrierefreiheit,
+   Zuverlässigkeit, Fehlerfälle und Fallbacks.
+8. Übergabegrenzen (Handoff Boundaries) explizit für Product, UX, Engineering,
+   Data/Analytics, Legal/Compliance und Operations — was jede Rolle
+   verantwortet und was nicht.
+
+Kommerzielle Leitplanken:
+Konkrete Angebotswerte, Rabatthöhen, Berechtigungsschwellen oder eine
+kommerzielle Freigabe sind:
+[[VARIABLE: falls bereits akzeptiert, hier eintragen — sonst leer lassen]]
+Ist das nicht in der akzeptierten Quelle oder oben ausgefüllt, erfinde keine
+Werte und keine Freigabe. Benenne die fehlende kommerzielle Entscheidung
+stattdessen explizit als offenen Konflikt und lege dafür ein neues
+human-gates/-Human-Gate an (mit der exakten Fragestellung), statt sie
+stillschweigend zu lösen oder zu raten.
+
+Ergebnis-Routing:
+Committe das Ergebnis als kanonisches Cell-Arbeitsartefakt unter work/ (nach
+work/TEMPLATE.task.md), mit Rückverweis auf die akzeptierte Quelle. Bei einem
+offenen kommerziellen Konflikt zusätzlich das human-gates/-Gate anlegen.
+Erfinde keine Policy, keine Anspruchslogik, keine Kundenevidenz, keine
+kommerzielle Freigabe und keine Angebotslogik, die nicht in der akzeptierten
+Quelle oder den oben ausgefüllten Variablen steht.</textarea>
+          <div class="prompt-controls">
+            <button type="button" class="copy-btn" data-copy-target="prompt-re">
+              Prompt kopieren <span class="copy-status" aria-live="polite"></span>
+            </button>
+            <span class="nojs-hint">Ohne JavaScript: Feld anklicken, markieren, kopieren.</span>
+          </div>
+        </div>
+
+        <details class="expected-result">
+          <summary>Expected result — was passiert danach?</summary>
+          <dl>
+            <dt>May create</dt>
+            <dd>A <code>work/</code> WorkItem holding the requirements spec; a <code>human-gates/</code> HumanGate if retention-offer economics are undecided.</dd>
+            <dt>Human still decides</dt>
+            <dd>Which accepted decision authorizes this work; any commercial offer values, thresholds, or approval.</dd>
+            <dt>Evidence the agent must cite</dt>
+            <dd>The accepted source reference; any constraints already on record.</dd>
+            <dt>Good result looks like</dt>
+            <dd>Every requirement has a stable <code>REQ-&lt;slug&gt;-NNN</code> ID traced to the accepted source and a testable acceptance criterion; the "Open conflicts" section is present even if empty; no invented commercial values.</dd>
+          </dl>
+          <p class="wrong-turn">
+            <strong>Common wrong turn:</strong> picking a plausible bonus/discount
+            value or eligibility threshold "to make it concrete" instead of naming
+            it as an open conflict routed to a Human Gate.
+          </p>
+        </details>
+      </article>
+
+      <!-- CARD 2: Business Analyst -->
+      <article class="card" aria-labelledby="card-ba-h">
+        <p class="skill-tag">Business Analyst</p>
+        <h3 id="card-ba-h">Tarifwechsel-Prävention vor Vertragsablauf</h3>
+        <p class="not-decide">
+          <strong>Was der Skill tut:</strong> verwandelt eine unscharfe geschäftliche
+          Frage in eine entscheidungsreife Analyse mit Evidenz, Optionen und
+          Trade-offs. <strong>Was der Skill nicht entscheidet:</strong> ob eine
+          Maßnahme umgesetzt/finanziert wird — das bleibt beim Decision Owner.
+        </p>
+
+        <div class="prompt-block">
+          <h4 id="prompt-ba-label">Vollständiger Copy/Paste-Prompt (Deutsch)</h4>
+          <textarea id="prompt-ba" readonly aria-labelledby="prompt-ba-label">Rolle & Kontext:
+Lies zuerst apps/team-capability-pack/CONTEXT_INDEX.md und lade darüber
+AUSSCHLIESSLICH apps/team-capability-pack/skills/BUSINESS-ANALYST.skill.md.
+Lade keinen der beiden anderen Skills parallel.
+
+Fragestellung:
+Analysiere eine Kohorte von Kund:innen, die über ein Preisvergleichsportal
+gewonnen wurden und deren Erstvertragslaufzeit bald endet — mit dem Risiko
+eines Tarifwechsels/einer Abwanderung zu einem anderen Anbieter über
+dasselbe Portal.
+
+Zielkohorte/bekannte Segmentkriterien:
+[[VARIABLE: z. B. "Erstverträge mit Ablauf in den nächsten 60 Tagen,
+gewonnen über Portal X" — nur eintragen, was tatsächlich bekannt/belegt ist]]
+
+Bereits vorhandene Evidenz/Datenquellen (Pfade in diesem Repo, z. B. work/,
+history/, frühere CellUpdates):
+[[VARIABLE: Pfad(e) einfügen oder leer lassen, falls keine vorhanden]]
+
+Bekannter Entscheidungseigner (Decision Owner), falls bekannt:
+[[VARIABLE: Rolle/Name, sonst leer lassen und als offene Frage behandeln]]
+
+Aufgabe:
+1. Formuliere ein messbares Ziel (measurable outcome) und benenne den
+   Entscheidungseigner.
+2. Definiere Kohorte und Ausschlüsse ausschließlich aus vorhandener Evidenz
+   — nicht aus Annahmen.
+3. Vergleiche als Optionen mindestens: Verlängerung mit Bonus, Verlängerung
+   ohne Bonus, Preisgarantie, längerfristige Tarif-/Vertragsprodukte, und
+   eine Kontrollgruppe ohne Intervention (No-Intervention-Control).
+4. Teste zusätzliche Varianten (z. B. Timing des Kontakts, abweichende
+   Eligibility-Kriterien) nur, wenn dafür bereits Evidenz vorliegt — erfinde
+   keine zusätzliche Variante ohne Beleg.
+5. Trenne jede Aussage explizit und zeilenweise in Evidence oder Hypothesis
+   (nach Skill-Vorgabe) — keine Vermischung.
+6. Bewerte Churn und Conversion sowie Marge/Wertbeitrag und
+   Customer-Experience-Leitplanken (CX Guardrails).
+7. Adressiere explizit: Kannibalisierung (z. B. Umsatzverschiebung von
+   Bestandskund:innen ohne echten Zusatznutzen), Selection Bias, operative
+   Machbarkeit und mögliche unerwünschte Nebenwirkungen.
+8. Stelle mindestens zwei echte Optionen mit Trade-offs gegenüber — keine
+   Alibi-Einzeloption.
+9. Empfiehl nur, wenn die Evidenzlage das zulässt; sonst lege ein
+   human-gates/-Human-Gate an, das die exakte Fragestellung und die Optionen
+   benennt.
+10. Route ein akzeptiertes nächstes Vorgehen als Experiment-WorkItem unter
+    work/.
+
+Harte Grenzen:
+Erfinde keine Stichprobengrößen, keine Uplift-/Wirkungswerte, keine
+statistischen Signifikanzschwellen, keine Bonushöhen oder Preise, und keine
+Freigabe/Approval, die nicht bereits oben oder in vorhandener Evidenz steht.</textarea>
+          <div class="prompt-controls">
+            <button type="button" class="copy-btn" data-copy-target="prompt-ba">
+              Prompt kopieren <span class="copy-status" aria-live="polite"></span>
+            </button>
+            <span class="nojs-hint">Ohne JavaScript: Feld anklicken, markieren, kopieren.</span>
+          </div>
+        </div>
+
+        <details class="expected-result">
+          <summary>Expected result — was passiert danach?</summary>
+          <dl>
+            <dt>May create</dt>
+            <dd>A <code>work/</code> WorkItem holding the analysis (always — routine or fork alike); additionally, a <code>human-gates/</code> HumanGate when the analysis surfaces a genuine strategic fork.</dd>
+            <dt>Human still decides</dt>
+            <dd>Whether a recommended treatment is approved/funded; any strategic fork the analysis names but can't adjudicate.</dd>
+            <dt>Evidence the agent must cite</dt>
+            <dd>A source reference for every "Evidence" line; existing Cell artifacts it actually read.</dd>
+            <dt>Good result looks like</dt>
+            <dd>At least two genuinely distinct options with trade-offs; Evidence and Hypothesis visually separated; ends in exactly one of a recommendation or a Human Gate, never both, never neither.</dd>
+          </dl>
+          <p class="wrong-turn">
+            <strong>Common wrong turn:</strong> recommending an intervention with
+            an invented uplift or sample-size number instead of citing real data
+            or naming the gap as a hypothesis.
+          </p>
+        </details>
+      </article>
+
+      <!-- CARD 3: Team Event Planner -->
+      <article class="card" aria-labelledby="card-tep-h">
+        <p class="skill-tag">Team Event Planner</p>
+        <h3 id="card-tep-h">Roadmap-Alignment plus Teambuilding</h3>
+        <p class="not-decide">
+          <strong>Was der Skill tut:</strong> entwirft ein fertiges
+          Moderationsdesign für ein Team-Meeting. <strong>Was der Skill nicht
+          entscheidet:</strong> er terminiert nichts, lädt niemanden ein, bucht
+          nichts und gibt nichts aus — das bleibt immer eine menschliche
+          Aktion.
+        </p>
+
+        <div class="prompt-block">
+          <h4 id="prompt-tep-label">Vollständiger Copy/Paste-Prompt (Deutsch)</h4>
+          <textarea id="prompt-tep" readonly aria-labelledby="prompt-tep-label">Rolle & Kontext:
+Lade apps/team-capability-pack/skills/TEAM-EVENT-PLANNER.skill.md über
+apps/team-capability-pack/CONTEXT_INDEX.md. Lade keinen der beiden anderen
+Skills parallel.
+
+Ziel des Termins:
+[[VARIABLE: konkretes Ziel, z. B. "Team einigt sich auf priorisierte Roadmap
+fürs nächste Quartal UND stärkt die Zusammenarbeit über eine interaktive
+Teambuilding-Sequenz"]]
+
+Was nach dem Termin wahr sein muss, das vorher nicht wahr war:
+[[VARIABLE: konkretes Ergebnis, z. B. "eine vom Team getragene, priorisierte
+Liste PLUS mindestens eine gemeinsam erlebte Teambuilding-Interaktion"]]
+
+Teilnehmende und Entscheidungsrollen (nur tatsächlich belegte Personen/Rollen
+eintragen, keine erfundenen):
+[[VARIABLE: Namen/Rollen + Entscheidungsrolle je Person — Decider,
+Contributor, oder Informed]]
+
+Rahmenbedingungen:
+Verfügbares Zeitfenster/Format (Remote/Hybrid/Präsenz):
+[[VARIABLE: z. B. "90 Minuten, hybrid"]]
+Bekannte Roadmap-Eingangsdaten (z. B. Pfad zu vorhandenem Backlog oder
+vorheriger Business-Analyst-Analyse):
+[[VARIABLE: Pfad(e) oder leer lassen]]
+
+Aufgabe:
+Entwirf — nur als Design-Artefakt, ohne irgendetwas zu terminieren,
+einzuladen, zu buchen oder auszugeben:
+1. Zielsetzung und erwartetes Ergebnis (siehe oben).
+2. Teilnehmende und Entscheidungsrollen mit Begründung.
+3. Pre-Read/Vorbereitung: was wer vorher lesen/vorbereiten soll, bis wann.
+4. Zeitlich getakteten Ablauf (Agenda), der Roadmap-Alignment,
+   Priorisierungs-/Abhängigkeitsarbeit UND eine interaktive
+   Teambuilding-Sequenz kombiniert — kein generischer Einheitsablauf.
+5. Moderationsmethode und Material je Segment (z. B. Dot-Voting für
+   Priorisierung, strukturierte Reflexionsübung fürs Teambuilding).
+6. Konkrete Maßnahmen für psychologische Sicherheit, Barrierefreiheit und
+   Remote/Hybrid-Fairness (z. B. Material vorab teilen, asynchroner
+   Beitragskanal, Zeitzonen-Fairness) — keine Pauschalfloskel.
+7. Entscheidungs- und Aktionsfestlegung: wer protokolliert, welche Vorlage,
+   wohin es abgelegt wird; wie Owner und Nachverfolgung für Actions
+   funktionieren.
+8. Post-Event-Routing: vor dem Termin ein work/-WorkItem mit diesem Design;
+   nach dem Termin — falls angemessen — ein CellUpdate oder CompletionRecord
+   mit den tatsächlichen Entscheidungen/Actions.
+9. Den wörtlichen Hinweis, dass Terminierung, Einladung, Buchung oder
+   Versand von Nachrichten explizit außerhalb dieses Skills liegen und eine
+   separate menschliche Aktion bleiben.
+
+Harte Grenzen:
+Erfinde keine Teilnehmenden, keine Präferenzen, keinen Termin, keine
+Einladung, keine Buchung und keine Ausgaben. Wenn das Ziel selbst umstritten
+ist oder der Teilnehmendenkreis über den normal autorisierten Cell-Kreis
+hinausgeht, lege stattdessen ein human-gates/-Human-Gate an.</textarea>
+          <div class="prompt-controls">
+            <button type="button" class="copy-btn" data-copy-target="prompt-tep">
+              Prompt kopieren <span class="copy-status" aria-live="polite"></span>
+            </button>
+            <span class="nojs-hint">Ohne JavaScript: Feld anklicken, markieren, kopieren.</span>
+          </div>
+        </div>
+
+        <details class="expected-result">
+          <summary>Expected result — was passiert danach?</summary>
+          <dl>
+            <dt>May create</dt>
+            <dd>A pre-event <code>work/</code> WorkItem holding the design; after the event, a <code>CellUpdate</code> or <code>CompletionRecord</code> if warranted.</dd>
+            <dt>Human still decides</dt>
+            <dd>The objective, if contested; actually scheduling, inviting, booking, or spending anything.</dd>
+            <dt>Evidence the agent must cite</dt>
+            <dd>Only already-on-record participants and constraints — never invented preferences or availability.</dd>
+            <dt>Good result looks like</dt>
+            <dd>Every participant has a stated decision role; accessibility accommodations are concrete, not boilerplate; the explicit non-actions line is present verbatim.</dd>
+          </dl>
+          <p class="wrong-turn">
+            <strong>Common wrong turn:</strong> drafting an actual calendar invite
+            or a message to send to participants, or writing "we'll make sure
+            it's accessible" with no concrete accommodation.
+          </p>
+        </details>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="chain" aria-labelledby="chain-h">
+    <h2 id="chain-h">Skill chain — one skill at a time, by trigger</h2>
+    <div class="chain" role="img" aria-label="Unclear business question routes to Business Analyst, then to an accepted outcome or a Human Gate, then to Requirements Engineering, then when collaboration is needed to Team Event Planner, then to a WorkItem, HumanGate, CompletionRecord, or CellUpdate.">
+      <div class="node">Unclear business question</div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node emph">Business Analyst</div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node">accepted outcome / Human Gate</div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node emph">Requirements Engineering</div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node">collaboration or decision session needed</div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node emph">Team Event Planner</div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="node">WorkItem / HumanGate / CompletionRecord / CellUpdate</div>
+    </div>
+    <p>
+      Skills are selected <strong>by trigger, not all loaded at once</strong>.
+      Start at <code>apps/team-capability-pack/CONTEXT_INDEX.md</code>, match
+      your request to exactly one routing-table row, and load only that one
+      skill file. If your request spans more than one skill, load the first
+      one only — its output routes to the next skill as a separate step.
+    </p>
+  </section>
+
+  <section id="improve" aria-labelledby="improve-h">
+    <h2 id="improve-h">Skill verbessern — improve safely, don't rewrite on feel</h2>
+    <p>
+      Don't edit a skill just because one output felt imperfect. A single
+      observation is a data point, not a mandate. Follow this loop instead:
+    </p>
+    <div class="loop-diagram" aria-label="Improvement loop diagram">real use
+  -&gt; inspect output against contract
+  -&gt; evidence-backed observation
+  -&gt; LearningCandidate
+  -&gt; classify exact delta
+  -&gt; test against existing proofs
+  -&gt; reviewed local adaptation OR upstream version proposal</div>
+
+    <div class="concepts">
+      <div class="concept">
+        <h4>Procedure truth</h4>
+        <p>The canonical skill contract itself — <code>apps/team-capability-pack/skills/*.skill.md</code>. Never edited on a feeling; only via a reviewed decision.</p>
+      </div>
+      <div class="concept">
+        <h4>Team-local vocabulary / examples</h4>
+        <p>Cell-specific terms, examples, or narrow adaptations layered on top of procedure truth — scoped to this Cell, never silently overwriting the canonical file.</p>
+      </div>
+      <div class="concept">
+        <h4>Learning candidate</h4>
+        <p>A non-canonical, human-gated observation buffer at <code>history/learning-candidates/</code>. Status progresses candidate → observed_once → repeated → ready_for_bcos_review. No BCOS repository mutation is ever triggered directly from an entry here.</p>
+      </div>
+      <div class="concept">
+        <h4>Canonical promotion / version change</h4>
+        <p>Only happens after a human reviews a repeated, evidenced pattern and explicitly accepts a version change to the upstream template or BCOS adapter — never automatically from one run.</p>
+      </div>
+    </div>
+
+    <h3>1. Skill review prompt</h3>
+    <div class="prompt-block">
+      <h4 id="prompt-review-label">Vollständiger Copy/Paste-Prompt (Deutsch)</h4>
+      <textarea id="prompt-review" readonly aria-labelledby="prompt-review-label">Vergleiche den realen Output
+[[VARIABLE: Pfad zum konkreten Output, z. B. work/WORKITEM-....md]]
+mit dem zugehörigen Skill-Vertrag
+apps/team-capability-pack/skills/[[VARIABLE: BUSINESS-ANALYST |
+REQUIREMENTS-ENGINEERING | TEAM-EVENT-PLANNER]].skill.md
+
+Identifiziere konkret, welche(r) Trigger Condition, Required Input,
+Workflow-Schritt, Quality Gate, Non-Authority-/Privacy-Boundary,
+Routing-Regel oder welches Beispiel (Positive/Negative Example) geholfen hat
+oder versagt hat — mit Belegstelle (Abschnitt im Output und im
+Skill-Vertrag).
+
+Bearbeite NICHTS am Skill selbst — reine Beobachtung. Wenn die Abweichung
+wiederholbar erscheint (nicht nur ein Einzelfall), lege dafür einen Eintrag
+unter history/learning-candidates/ an (Status candidate, siehe
+history/learning-candidates/README.md). Ein einzelner Fall allein ist noch
+kein Beleg für ein wiederholbares Muster — markiere das ehrlich.</textarea>
+      <div class="prompt-controls">
+        <button type="button" class="copy-btn" data-copy-target="prompt-review">
+          Prompt kopieren <span class="copy-status" aria-live="polite"></span>
+        </button>
+        <span class="nojs-hint">Ohne JavaScript: Feld anklicken, markieren, kopieren.</span>
+      </div>
+    </div>
+
+    <h3>2. Local configuration proposal prompt</h3>
+    <div class="prompt-block">
+      <h4 id="prompt-local-label">Vollständiger Copy/Paste-Prompt (Deutsch)</h4>
+      <textarea id="prompt-local" readonly aria-labelledby="prompt-local-label">Formuliere einen eng begrenzten, Cell-lokalen Anpassungsvorschlag für
+[[VARIABLE: welcher Skill/welcher Abschnitt]], basierend auf der Beobachtung
+aus [[VARIABLE: Verweis auf den Skill-Review bzw. den
+Learning-Candidate-Eintrag]].
+
+Nenne explizit:
+- Zweck der Anpassung,
+- exaktes Delta (was genau ändert sich, Wortlaut wenn möglich),
+- warum das Cell-spezifisch ist (nicht universell für alle Teamcells),
+- Nicht-Ziele (was sich bewusst NICHT ändert),
+- Risiken,
+- Auswirkung auf Evidence-Pflicht/Human-Gate-Regeln/Datenschutz (falls
+  keine: explizit "keine" schreiben, nicht weglassen),
+- Regressionstest gegen die bestehenden Positive/Negative Examples des
+  Skills (zeige, dass die Anpassung die bisherigen Beispiele nicht bricht),
+- Rollback-Weg.
+
+Schwäche keine Evidence- oder Human-Gate-Regel. Überschreibe nicht die
+kanonische Upstream-Skill-Datei direkt ohne eine geprüfte, dokumentierte
+Entscheidung (z. B. einen human-gates/-Eintrag, der die Anpassung
+akzeptiert).</textarea>
+      <div class="prompt-controls">
+        <button type="button" class="copy-btn" data-copy-target="prompt-local">
+          Prompt kopieren <span class="copy-status" aria-live="polite"></span>
+        </button>
+        <span class="nojs-hint">Ohne JavaScript: Feld anklicken, markieren, kopieren.</span>
+      </div>
+    </div>
+
+    <h3>3. Upstream improvement candidate prompt</h3>
+    <div class="prompt-block">
+      <h4 id="prompt-upstream-label">Vollständiger Copy/Paste-Prompt (Deutsch)</h4>
+      <textarea id="prompt-upstream" readonly aria-labelledby="prompt-upstream-label">Erstelle einen LearningCandidate (nach dem Format von
+history/learning-candidates/LEARNING-20260712-001-*.md als Vorbild:
+Frontmatter + "## Observation", "## Why this matters beyond this one run",
+"## Candidate rule for ...", "## Status") zur Prüfung durch das kanonische
+Template bzw. den BCOS-Adapter, aus dem diese Zelle installiert wurde.
+
+Enthalte:
+- beobachtete Fälle (mindestens einer, mit Belegpfad),
+- Konfidenz (wie sicher ist das Muster wirklich — ehrlich einschätzen),
+- betroffener Skill-Abschnitt,
+- vorgeschlagene Änderung,
+- Gegenbeispiele (Fälle, in denen die Beobachtung NICHT zutrifft, falls
+  bekannt),
+- benötigter Beleg vor einer Promotion (was müsste zusätzlich beobachtet
+  werden).
+
+Formuliere explizit, dass eine einzelne Beobachtung noch keine globale
+Betriebsregel ist — der Status bleibt candidate bzw. observed_once, bis das
+Muster wiederholt auftritt und ein Mensch die Promotion zu
+ready_for_bcos_review entscheidet.</textarea>
+      <div class="prompt-controls">
+        <button type="button" class="copy-btn" data-copy-target="prompt-upstream">
+          Prompt kopieren <span class="copy-status" aria-live="polite"></span>
+        </button>
+        <span class="nojs-hint">Ohne JavaScript: Feld anklicken, markieren, kopieren.</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="links" aria-labelledby="links-h">
+    <h2 id="links-h">Weiterführende Links</h2>
+    <ul class="link-list">
+      <li><a href="../../ONBOARDING.md">ONBOARDING.md</a> — this Cell's one-page start guide</li>
+      <li><a href="../../apps/team-capability-pack/README.md">apps/team-capability-pack/README.md</a> — what this app is and isn't</li>
+      <li><a href="../../apps/team-capability-pack/CONTEXT_INDEX.md">apps/team-capability-pack/CONTEXT_INDEX.md</a> — routing table: which skill to load, when</li>
+      <li><a href="../../apps/team-capability-pack/skills/BUSINESS-ANALYST.skill.md">apps/team-capability-pack/skills/BUSINESS-ANALYST.skill.md</a></li>
+      <li><a href="../../apps/team-capability-pack/skills/REQUIREMENTS-ENGINEERING.skill.md">apps/team-capability-pack/skills/REQUIREMENTS-ENGINEERING.skill.md</a></li>
+      <li><a href="../../apps/team-capability-pack/skills/TEAM-EVENT-PLANNER.skill.md">apps/team-capability-pack/skills/TEAM-EVENT-PLANNER.skill.md</a></li>
+      <li>
+        <a href="../../apps/brand-brain/CONTEXT_INDEX.md">apps/brand-brain/CONTEXT_INDEX.md</a>
+        <span class="conditional-note">— only if a domain Brand Brain is installed in this Cell; load its bounded index only when a prompt is brand/tone/journey-sensitive, never its full content by default.</span>
+      </li>
+      <li><a href="../../work/">work/</a> — where accepted analyses, specs, and event designs land as WorkItems</li>
+      <li><a href="../../human-gates/">human-gates/</a> — where strategic forks and undecided commercial questions land</li>
+      <li><a href="../../history/learning-candidates/">history/learning-candidates/</a> — non-canonical observation buffer for skill improvement</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <p>
+    Static, self-contained HTML — no build step, no framework, no CDN, no
+    external font, no analytics, no network dependency. Opens directly from
+    the file system. Copy buttons are a progressive enhancement; every
+    prompt field remains selectable and copyable with JavaScript disabled.
+    Honors <code>prefers-reduced-motion</code> and <code>prefers-color-scheme</code>.
+  </p>
+  <p>
+    This page assumes the Teamcell Plus profile and the optional Team
+    Capability Pack app are installed in the target Cell (see
+    <code>profiles/plus/scripts/install-plus-profile.sh</code> and
+    <code>profiles/plus/scripts/install-capability-pack.sh</code> in the
+    canonical template). In the bare canonical template repository some
+    links above resolve only once a Cell has both installed — the same
+    precedent already set by <code>profiles/plus/ONBOARDING.md.template</code>.
+  </p>
+</footer>
+
+<script>
+(function () {
+  document.querySelectorAll('.copy-btn[data-copy-target]').forEach(function (btn) {
+    var status = btn.querySelector('.copy-status');
+    var timer = null;
+
+    function announce(text, ms) {
+      if (status) { status.textContent = text; }
+      btn.classList.add('copied');
+      if (timer) { window.clearTimeout(timer); }
+      timer = window.setTimeout(function () {
+        if (status) { status.textContent = ''; }
+        btn.classList.remove('copied');
+      }, ms || 2500);
+    }
+
+    btn.addEventListener('click', function () {
+      var targetId = btn.getAttribute('data-copy-target');
+      var ta = document.getElementById(targetId);
+      if (!ta) { return; }
+
+      function selectFallback() {
+        ta.focus();
+        ta.select();
+        try { ta.setSelectionRange(0, ta.value.length); } catch (e) { /* ignore */ }
+      }
+
+      if (window.navigator && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(
+          function () { announce('Kopiert ✓'); },
+          function () {
+            selectFallback();
+            announce('Ausgewählt – zum Kopieren ⌘/Strg+C drücken');
+          }
+        );
+      } else {
+        selectFallback();
+        announce('Ausgewählt – zum Kopieren ⌘/Strg+C drücken');
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

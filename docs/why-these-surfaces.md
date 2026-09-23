@@ -122,6 +122,11 @@ has been run successfully and is stable, it earns a place in `playbooks/`.
 
 ## Scripts: Cell Infrastructure
 
+In an installed Teamcell Lite Cell, `scripts/` holds exactly this kind of
+infrastructure: `start-cell.sh` (daily start), `validate-cell.sh` and
+`validate-completion.py` (structural and completion checks), plus the
+optional Plus scripts when that package is installed.
+
 `scripts/` holds the tooling that serves the Cell itself — validators, linters, setup
 scripts, automation helpers used in Cell operations. These are not outputs of Cell work;
 they are what makes Cell operations reliable.

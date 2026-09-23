@@ -1,0 +1,75 @@
+# .bcos/CELL-GOVERNANCE.yaml.template
+#
+# Per-Cell machine-readable governance-profile and ownership configuration.
+# Plain YAML — not Markdown with frontmatter — so a shell or Python validator
+# can parse it directly.
+#
+# Contracts (shipped at these same paths in every installed Cell, baseline
+# package; source of truth is the public Teamcell distribution):
+#   schemas/teamcell-governance-profile.schema.md  (this file's shape)
+#   schemas/teamcell-cell-ownership.schema.md      (cell_owner_role /
+#                                                    decision_owner_roles /
+#                                                    role_bindings shape)
+#   docs/teamcell-gate-matrix.md
+#     (which decision classes require a Human Gate under each profile)
+#
+# The confirmed installer (scripts/teamcell-install-preview.py) writes
+# .bcos/CELL-GOVERNANCE.yaml from its preview input. Without the installer:
+# copy this file to .bcos/CELL-GOVERNANCE.yaml (drop the .template suffix)
+# when this Cell is ready to configure governance. Until
+# that real file exists, scripts/validate-cell.sh treats the absence as a
+# valid, expected pre-configuration state — never an error, and never
+# license to silently assume a profile.
+#
+# governance_profile: one of
+#   quick_build        - early exploration and low-risk work
+#   operating_team      - default recommendation for normal team work
+#   compliance_safety   - regulated or high-risk work
+#   null                 - not yet selected (must pair with legacy_unresolved: true)
+#
+# Never pre-select a value here. A human must explicitly choose one — an
+# agent may record `selected_by: agent:<id>` only when acting on that
+# human's explicit instruction for this specific selection.
+
+schema_version: "0.1"
+
+governance_profile: null
+legacy_unresolved: true
+
+# cell_owner_role: the generic role slug (never a person's name) that holds
+# default decision authority for this Cell, e.g. founder | lead | product_owner.
+# null until this Cell's ownership model is configured.
+cell_owner_role: null
+
+# decision_owner_roles: all ten canonical decision classes must always be
+# present as keys, each set to a role slug or the literal `unresolved`.
+# Omitting a key is invalid — "not yet considered" and "intentionally
+# unresolved" must always be distinguishable.
+decision_owner_roles:
+  routine_work: unresolved
+  material_scope_change: unresolved
+  priority_change: unresolved
+  budget_change: unresolved
+  customer_promise: unresolved
+  legal_privacy: unresolved
+  people_impacting: unresolved
+  irreversible_action: unresolved
+  security_change: unresolved
+  external_visibility: unresolved
+
+# role_bindings: every role slug referenced above (as cell_owner_role's value
+# or as any non-unresolved decision_owner_roles value) must have an entry
+# here, even when unbound (human_id: null). Never default to a real person's
+# name — not a prior Cell's owner, not the template's own historical
+# example, and not any other name not explicitly bound by a human decision.
+role_bindings: {}
+
+selected_at: null
+selected_by: null
+
+# profile_recommendation: optional. Set only when a migration or setup tool
+# has a basis to *recommend* a profile for a legacy_unresolved Cell without
+# silently assigning it — see schemas/teamcell-governance-profile.schema.md
+# for the full field contract. Leave null for a fresh Cell where a human
+# selects a profile directly.
+profile_recommendation: null

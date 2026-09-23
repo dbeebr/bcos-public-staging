@@ -1,0 +1,303 @@
+{
+  "schema_version": "1",
+  "product": "BCOS Teamcell Lite",
+  "version_label": "teamcell-lite-v0.4.0-rc.6",
+  "validated_install_modes": [
+    "new_from_template"
+  ],
+  "packages": [
+    "teamcell-lite-baseline",
+    "teamcell-plus-profile",
+    "team-capability-pack"
+  ],
+  "kit": {
+    "path": "distribution/teamcell-lite/bootstrap-kit",
+    "tree_sha256": "b329a9e5b8f03e449f298a7ec640bfdecd6e81f5881218b8e85f932d5b8a4835",
+    "tree_sha256_algorithm": "sha256 over sorted '<relative-path>\\0<sha256-of-file>\\n' lines (scripts/teamcell-install-preview.py kit_tree_sha256)",
+    "file_count": 59,
+    "files": [
+      {
+        "path": ".bcos/CELL-GOVERNANCE.yaml.template",
+        "sha256": "ba4a93bb5e982450e2c4d9e1fafc6d62a131d1ea6a40a999c9a1409d4538fa88"
+      },
+      {
+        "path": ".bcos/CELL-PROFILE.yaml",
+        "sha256": "59524cf52cf4a34d255ed80f56b3637c11cd9248c3be2d185484c80724650c93"
+      },
+      {
+        "path": ".github/copilot-instructions.md",
+        "sha256": "5b987ba3ae51bde3bb7a9a3e634652379d3ce401eb45c3bc948ada8343c19d74"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "3302cbaec3cc0a668c154eeed5d0ca87ff17e00b3e12349ab84a5dbf215fd5d8"
+      },
+      {
+        "path": "AGENTS.md",
+        "sha256": "8f9f569dbc6efe33b74a1d6be91dcb78a09ebf10710aaf440b56a1fa2f009dc1"
+      },
+      {
+        "path": "CONTEXT_INDEX.md",
+        "sha256": "4735fffb5447f39f4acf2b051353d865f483aaacfefc4e1f77f96a2f1fb89555"
+      },
+      {
+        "path": "LICENSE",
+        "sha256": "df154360941167d3f171e5ed9e34b06d94260115866358da90ff459a078fc4fb"
+      },
+      {
+        "path": "PROJECT.md",
+        "sha256": "f6d71c2afbec5819699fe988f2c8d3b2da391d436d1d847b7ed9927e74791d1b"
+      },
+      {
+        "path": "README.md",
+        "sha256": "2d53187173ffddd8f77c70b86818794e023a3c0bcea83b30f4d7da677dc22726"
+      },
+      {
+        "path": "TEAM-PROFILE.md",
+        "sha256": "e0ed4ba489818655e879f448552ebce8bdb08dcb8c9a482683e3f561062a33f7"
+      },
+      {
+        "path": "docs/EXPANSION-PROFILE.md",
+        "sha256": "2286d6fb0255ffb761771680409ee65890c6be5098cbfffce91efc590cbf24c0"
+      },
+      {
+        "path": "docs/TEAMCELL-LITE-GENERIC-PUBLIC-ROUTING-DELTA-20260705.md",
+        "sha256": "6eca5b3462e82c1005d1fde8243867835b0f1fdeae7adb8d86377131f25b5a70"
+      },
+      {
+        "path": "docs/teamcell-gate-matrix.md",
+        "sha256": "b0f50845dcb7c528510b06c81bf86594a0ecaedd169505dbd675e340858e4a60"
+      },
+      {
+        "path": "history/decisions/.gitkeep",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "path": "history/records/.gitkeep",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "path": "history/reviews/.gitkeep",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "path": "human-gates/README.md",
+        "sha256": "2c52a8459b2b3dc998af1d851bfab15201097834de878ffb037076bdd8597556"
+      },
+      {
+        "path": "human-gates/TEMPLATE.human-gate.md",
+        "sha256": "bef72a734d60eae5fd3e7e2d66029e5be9793bd391e3cf12fcb28a750b0dd2ed"
+      },
+      {
+        "path": "human-gates/TEMPLATE.visual-human-gate.html",
+        "sha256": "ec62798e31b29b6b21586b71f99be557d6574cc9a6b11a9635ce899734aa5797"
+      },
+      {
+        "path": "inbox/INBOX.md",
+        "sha256": "91c6d20f55ae3124ff896ebbdb207361a962ca252fe383cc8d6beaec13c22eb4"
+      },
+      {
+        "path": "packages/PACKAGES.yaml",
+        "sha256": "ad7e7a0e8696337b598671a0a09451ee746850cb4bfd00da46fea957b2ba082a"
+      },
+      {
+        "path": "playbooks/AGENT-ROUTING.playbook.md",
+        "sha256": "5ee4f057a725493ee6791f2bbbfd557b4bc3daecbdaf26a137d61bbd952c61b0"
+      },
+      {
+        "path": "playbooks/README.md",
+        "sha256": "cd40aab03fb718d54d56be491350649384fce4cc08d1477ef041aa8d2bcd3e8b"
+      },
+      {
+        "path": "playbooks/TEMPLATE.playbook.md",
+        "sha256": "7bba1380a9c01ca6fb61e12862187586d03638cfbc991c244dcf2c618bdd0232"
+      },
+      {
+        "path": "playbooks/VALIDATOR-BASELINE.playbook.md",
+        "sha256": "916c346a87a37ac408d43f204e1972b885897a6cd52f5ba87c320fcf3cbe046f"
+      },
+      {
+        "path": "playbooks/onboarding/TEAMCELL-LITE-INTRO.html",
+        "sha256": "751c8a733a761bb3ce20a2dc32665501b3cc5dbb8cec136b4989ee8c78841d8d"
+      },
+      {
+        "path": "profiles/plus/ONBOARDING.md.template",
+        "sha256": "abc240b709dd8da26c7a5fae2ff35586b64372e240de97a131ce625958276a55"
+      },
+      {
+        "path": "profiles/plus/README.md",
+        "sha256": "f68148a34c9db6e2055b19d4dc2e093ade50d6630027c9b311fa5c82d604234c"
+      },
+      {
+        "path": "profiles/plus/apps/team-capability-pack/CONTEXT_INDEX.md",
+        "sha256": "376c5fec65b445e3d21b2796182274638bc7f720af8e3fdf5e5e2f6fce331445"
+      },
+      {
+        "path": "profiles/plus/apps/team-capability-pack/README.md",
+        "sha256": "b1314d6fccc43bb61036a549c7b98c748c582de1550c5f01258f8b926c94e09c"
+      },
+      {
+        "path": "profiles/plus/apps/team-capability-pack/onboarding/SKILL-PLAYGROUND.html",
+        "sha256": "40afae1edb043d3f6507eff3522392328d70faf60dbd0144a759fc42715b0d01"
+      },
+      {
+        "path": "profiles/plus/apps/team-capability-pack/skills/BUSINESS-ANALYST.skill.md",
+        "sha256": "3f74c4a9f42a1ac8383db3a78501f4d1b4d5c1818c6beaf9262c806759693755"
+      },
+      {
+        "path": "profiles/plus/apps/team-capability-pack/skills/REQUIREMENTS-ENGINEERING.skill.md",
+        "sha256": "04bd17b346b6b1e1950ed38967b1a3dd3ec0cb4f276effead07b6cf1096c59af"
+      },
+      {
+        "path": "profiles/plus/apps/team-capability-pack/skills/TEAM-EVENT-PLANNER.skill.md",
+        "sha256": "dce44487966e8fb9f8d10f86539ebd0909dd445b02f6cc110155608afde95e22"
+      },
+      {
+        "path": "profiles/plus/docs/CONTRACTS-V1.md",
+        "sha256": "c9aa25cbcd6aff38d3b18beadc47a6c320854c144f9775c59f964e1a131f7fe2"
+      },
+      {
+        "path": "profiles/plus/scripts/install-capability-pack.sh",
+        "sha256": "ba9eb28688da50ab504c43170c82021bbbb100a229f7da3d1deb129f3708975c"
+      },
+      {
+        "path": "profiles/plus/scripts/install-plus-profile.sh",
+        "sha256": "8b480b6d2419f85f9088d1576b8d8145f185f47d19c984b7b2b4d23910544a51"
+      },
+      {
+        "path": "profiles/plus/scripts/morning-pulse.sh",
+        "sha256": "06543cfd0a5e4a9097018ec8355bc944985782e9591575074b7e37f6b963f8e4"
+      },
+      {
+        "path": "profiles/plus/scripts/post-cell-update.sh",
+        "sha256": "cdaf525e52f2a8c68fd028ca5c2707e89bb727645d608aaed566e14ecaad2b77"
+      },
+      {
+        "path": "profiles/plus/scripts/validate-cell-plus.sh",
+        "sha256": "ff0e3cfab9240f5a6a23690b039fa7f12cfae6b233cdf1b365a9785ea14d4d01"
+      },
+      {
+        "path": "reports/verification/.gitkeep",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "path": "schemas/completion-record.schema.md",
+        "sha256": "6ea19fc5eae01d5f9e2be826553f11e667b7fbdc5a2d5cee5701274a7f03b897"
+      },
+      {
+        "path": "schemas/teamcell-cell-ownership.schema.md",
+        "sha256": "0e9bfb5b86695d1ce908dc232134093a93c655859a5e186f9d68cdcb659e2394"
+      },
+      {
+        "path": "schemas/teamcell-governance-profile.schema.md",
+        "sha256": "823ba223c3f5d2d34a44584ab794eac6c49ad47b3f9cb58810af89fb901e3e8f"
+      },
+      {
+        "path": "scripts/render-instructions.py",
+        "sha256": "536a7930930008da1de8847270813eb5fc99af05d87dfd5627f7b0223ebd5dd0"
+      },
+      {
+        "path": "scripts/start-cell.sh",
+        "sha256": "6eea505a695c7d18a052186dc1dd7e0099f1bd85b2814ab9a1cb9ff38b2fd509"
+      },
+      {
+        "path": "scripts/validate-cell.sh",
+        "sha256": "812cb10a2b61cc4c61f16235cd8bba1833eacaff33253b680211c628472c90c9"
+      },
+      {
+        "path": "scripts/validate-completion.py",
+        "sha256": "257f5cb1998b2e4b8668a95a8f18f586f5fe80b11647742eca13a1c08a1e02f6"
+      },
+      {
+        "path": "scripts/validate-skill-playground.py",
+        "sha256": "d750424860fa68dbc64a5161088567003205e696fdf4b7ad7a0397d9cf1e09a2"
+      },
+      {
+        "path": "scripts/verify-app-manifests.py",
+        "sha256": "cd2af886d5f4e85996d68af2a56d6e015eb352421edebc2450f5e2403dae7666"
+      },
+      {
+        "path": "templates/APP-INSTRUCTIONS-chatgpt.template.md",
+        "sha256": "9c39865ae1c2048fc061be1e7a85b3b1699a9321bc9fb23d192f2f52f1484d91"
+      },
+      {
+        "path": "templates/APP-INSTRUCTIONS-claude.template.md",
+        "sha256": "3f9a807f758b55ff3917616adfc9f14861675e1f3442321becd9834b68c97dbf"
+      },
+      {
+        "path": "templates/APP-INSTRUCTIONS-copilot.template.md",
+        "sha256": "4d803a63485aabaaa3cc90e48151a78f27b58e28ac7dc34db82f1b1332e08834"
+      },
+      {
+        "path": "templates/APP-INSTRUCTIONS-gemini.template.md",
+        "sha256": "0026377e0ca320712caf54c324d28a819418d86261aedfbf98cdf9e7541d07c5"
+      },
+      {
+        "path": "templates/APP-INSTRUCTIONS-other.template.md",
+        "sha256": "ad1ceb2be9da00518ee2ae8f53710c8067717e0f1960fbfaeb593186afc75a68"
+      },
+      {
+        "path": "templates/FIRST-RUN-AGENT-PROMPT.template.md",
+        "sha256": "034b0c9f70739ec969272c0097d00fd80ec527fda06c2ddfa70a808f9ff77b01"
+      },
+      {
+        "path": "templates/PROJECT-INSTRUCTIONS.template.md",
+        "sha256": "4f4bc1e68212575ac79c26e75d193ec598608b3f0cd5836875464fc153d3e98b"
+      },
+      {
+        "path": "work/README.md",
+        "sha256": "84b4893abd388fd54e8ac26290f06dbf88e781071dc2699bb1a614ac354eaf49"
+      },
+      {
+        "path": "work/TEMPLATE.task.md",
+        "sha256": "5326efd51fc692f7301c44c6354ac5eb8bb77afe6bb9cb88ec387c3bbbf062a8"
+      }
+    ]
+  },
+  "upstream": {
+    "template": {
+      "label": "canonical Teamcell Lite template (private upstream, not publicly accessible)",
+      "commit_sha": "d516fa3f44b3fd32018484b090aa3b0e9de9b92e"
+    },
+    "tools": {
+      "label": "BCOS operator repository (private upstream, not publicly accessible)",
+      "commit_sha": "507e002e7847303e4d561b05218fe318db396bb2",
+      "files": {
+        "scripts/teamcell-install-preview.py": {
+          "git_blob_sha": "af47b02f3bfa208031f84ef919eb613263fbc021",
+          "sha256": "ca678c5397f66fe7ade7e5116e8c452a41ea66665367fb5e85378f452b48051f"
+        },
+        "scripts/teamcell-install-preflight.sh": {
+          "git_blob_sha": "deb386028cca78d77a0846019fa31ce722e5c145",
+          "sha256": "df503a7cb8538f5d737f3cce484c6776b23eef0875967f83d6684eea08b0f527"
+        },
+        "scripts/bootstrap-team-cell.sh": {
+          "git_blob_sha": "e806464741863ef4a4655d885d5ffb743b2dce8c",
+          "sha256": "182acb534b65c3c14722f6b8a3826e4a649407d5a6701559a04965ed80eef689"
+        },
+        "scripts/resolve-cell-identity.py": {
+          "git_blob_sha": "74f53b1ee15d72501b3b5937548d9cd1e150f5de",
+          "sha256": "4fee4ad924a8c27bc4b36a37a7f53003e2ef3dd59092bb720f47baeb3b884682"
+        },
+        "scripts/generate-teamcell-installation-receipt.py": {
+          "git_blob_sha": "7d06a33e6256a4914f046400f4e48ee4b176c9a5",
+          "sha256": "5a7f59e91c7007c5141e7165e68522e509b495942423daeff8fd3c9d42bece6e"
+        },
+        "scripts/personalize-team-cell.sh": {
+          "git_blob_sha": "2a7ab21e693324bc936af9a1c9e7e9ded666a74b",
+          "sha256": "5982d0ff94688e824351bb970bc1f36d9e5094e490ef25da49938ea23fdd0aa8"
+        }
+      }
+    }
+  },
+  "excluded_from_kit": [
+    {
+      "path": ".bcos/owner-denylist.txt",
+      "reason": "maintainer-side owner-drift watch list naming the template's historical owner; the shipped validator works without it"
+    },
+    {
+      "path": "reports/verification/REPORT-20260624-001-seed-repository-validation.md",
+      "reason": "historical seed proof of an earlier template version; does not evidence this release (see reports/verification/PUBLIC-CELL-RELEASE.md)"
+    }
+  ]
+}

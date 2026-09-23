@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<!-- Teamcell Lite Onboarding Deck — TEAMCELL-LITE-INTRO.html -->
+<!-- Reference/workshop deck: not the
+     primary first-start surface. playbooks/onboarding/START-HERE.html
+     (generated fresh by scripts/start-cell.sh every run) is the current
+     Cell-specific onboarding page. This deck remains available for a
+     longer (up to ~90 minute) generic workshop walkthrough of the five
+     Teamcell surfaces, independent of any one Cell's live state. -->
+<!-- Generic template — no client-specific content. -->
+<!-- FORK: if you adapt this for a specific organisation, add a FORK comment here and keep client content out of this canonical template repo. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teamcell Lite — Reference Workshop Deck</title>
+<style>
+  /* ── Reset & Base ───────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent:   #f5c842;
+    --accent-dk:#c9a115;
+    --bg:       #fafaf8;
+    --slide-bg: #ffffff;
+    --text:     #1a1a1a;
+    --muted:    #666666;
+    --code-bg:  #f0ede6;
+    --border:   #e0ddd6;
+    --slide-w:  860px;
+    --slide-h:  540px;
+  }
+
+  html { background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: var(--text); }
+  body { padding: 2rem 1rem 4rem; }
+
+  /* ── Slide ──────────────────────────────────────────────────────── */
+  .slide {
+    background: var(--slide-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    max-width: var(--slide-w);
+    min-height: var(--slide-h);
+    margin: 0 auto 3.5rem;
+    padding: 2.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    scroll-margin-top: 1rem;
+    position: relative;
+  }
+
+  /* accent bar on every slide */
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 6px 6px 0 0;
+  }
+
+  /* ── Slide header ───────────────────────────────────────────────── */
+  .slide-num {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent-dk);
+    margin-bottom: .4rem;
+  }
+  .slide h2 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 1.4rem;
+    color: var(--text);
+  }
+  .slide-body { flex: 1; }
+
+  /* ── Typography inside slides ───────────────────────────────────── */
+  p { line-height: 1.65; margin-bottom: .9rem; }
+  p:last-child { margin-bottom: 0; }
+
+  ul, ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+  li { line-height: 1.6; margin-bottom: .35rem; }
+
+  strong { font-weight: 600; }
+
+  .note {
+    background: #fffbea;
+    border-left: 3px solid var(--accent);
+    padding: .55rem .9rem;
+    font-size: .88rem;
+    border-radius: 0 4px 4px 0;
+    margin: 1rem 0;
+    color: #4a3d00;
+  }
+
+  .warning {
+    background: #fff5f5;
+    border-left: 3px solid #e06060;
+    padding: .55rem .9rem;
+    font-size: .88rem;
+    border-radius: 0 4px 4px 0;
+    margin: 1rem 0;
+    color: #6b0000;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: .9rem 1rem;
+    font-size: .84rem;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    overflow-x: auto;
+    margin: .8rem 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  code { font-family: inherit; }
+
+  table { border-collapse: collapse; width: 100%; margin: .8rem 0; font-size: .9rem; }
+  th { background: var(--code-bg); text-align: left; padding: .45rem .7rem; border: 1px solid var(--border); font-weight: 600; }
+  td { padding: .45rem .7rem; border: 1px solid var(--border); vertical-align: top; }
+
+  /* ── Slide footer ───────────────────────────────────────────────── */
+  .slide-footer {
+    margin-top: 1.5rem;
+    padding-top: .75rem;
+    border-top: 1px solid var(--border);
+    font-size: .75rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ── Navigation bar ─────────────────────────────────────────────── */
+  .nav {
+    max-width: var(--slide-w);
+    margin: 0 auto 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+  }
+  .nav a {
+    display: inline-block;
+    padding: .3rem .75rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: .78rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: background .15s;
+  }
+  .nav a:hover { background: var(--accent); color: #000; border-color: var(--accent-dk); }
+
+  /* ── Page title ─────────────────────────────────────────────────── */
+  .page-title {
+    max-width: var(--slide-w);
+    margin: 0 auto 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── Two-column layout helper ───────────────────────────────────── */
+  .cols { display: flex; gap: 2rem; }
+  .col  { flex: 1; }
+
+  /* ── Print styles ───────────────────────────────────────────────── */
+  @media print {
+    body { padding: 0; background: #fff; }
+    .nav { display: none; }
+    .slide {
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      page-break-after: always;
+      margin: 0;
+      max-width: 100%;
+      min-height: 0;
+      padding: 2rem 2.5rem;
+    }
+    .slide::before { display: none; }
+    .slide-footer { position: fixed; bottom: .5rem; left: 2.5rem; right: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div style="max-width:860px;margin:0 auto 1rem;padding:.75rem 1rem;background:#fff3cd;border:1px solid #e0c15c;border-radius:6px;color:#4a3b00;font-size:.9rem;">
+  <strong>Reference / workshop deck</strong> — not this Cell's current
+  primary onboarding page. Open <code>playbooks/onboarding/START-HERE.html</code>
+  (generated by <code>scripts/start-cell.sh</code>) for this Cell's live
+  stage, governance, active work and next action.
+</div>
+
+<div class="page-title">Teamcell Lite — Onboarding (Reference Workshop Deck)</div>
+
+<!-- ── Navigation ──────────────────────────────────────────────────── -->
+<nav class="nav" aria-label="Slide navigation">
+  <a href="#slide-1">1 · What Is This?</a>
+  <a href="#slide-2">2 · Five Surfaces</a>
+  <a href="#slide-3">3 · Roles</a>
+  <a href="#slide-4">4 · Use Cases</a>
+  <a href="#slide-5">5 · Data Policy</a>
+  <a href="#slide-6">6 · First Steps</a>
+  <a href="#slide-7">7 · Install / Setup</a>
+  <a href="#slide-8">8 · Q&amp;A</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SLIDE 1 — What Is This Workspace?
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-1">
+  <div class="slide-num">Slide 1 of 8</div>
+  <h2>What Is This Workspace?</h2>
+  <div class="slide-body">
+    <p><strong>Teamcell Lite</strong> is a lightweight shared operating layer for a team or cross-functional cell. It gives everyone — humans and AI agents — a single, structured place to manage work, record decisions, and hand off context.</p>
+
+    <p>It is <strong>not</strong> a replacement for your existing tools. Your ticketing system, wiki, design tool, and source control remain authoritative for the things they own. Teamcell Lite sits alongside them as a coordination surface.</p>
+
+    <div class="cols">
+      <div class="col">
+        <p><strong>What it is:</strong></p>
+        <ul>
+          <li>A local, file-based operating layer</li>
+          <li>A shared context for humans + agents</li>
+          <li>A structured inbox → work → decision flow</li>
+          <li>A lightweight governance record</li>
+        </ul>
+      </div>
+      <div class="col">
+        <p><strong>What it is not:</strong></p>
+        <ul>
+          <li>A replacement for your ticketing system</li>
+          <li>A content management system</li>
+          <li>A live application or hosted service</li>
+          <li>An autonomous decision-maker</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note">Your authoritative systems (ticketing, wiki, design tool, source control) stay where they are. This workspace references them — it does not replace them.</div>
+  </div>
+  <div class="slide-footer">
+    <span>Teamcell Lite Onboarding · v0.1 · internal use only</span>
+    <span>1 / 8</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SLIDE 2 — The Five Surfaces
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-2">
+  <div class="slide-num">Slide 2 of 8</div>
+  <h2>The Five Surfaces</h2>
+  <div class="slide-body">
+    <p>Every Teamcell Lite workspace contains the same five top-level areas. Each has a defined role.</p>
+
+    <table>
+      <tr>
+        <th>Surface</th>
+        <th>What it holds</th>
+        <th>Who adds to it</th>
+      </tr>
+      <tr>
+        <td><strong>inbox/</strong></td>
+        <td>Raw inputs that haven't been processed yet — notes, summaries, requests, exports from other tools</td>
+        <td>Anyone (human or agent)</td>
+      </tr>
+      <tr>
+        <td><strong>work/</strong></td>
+        <td>Active work items created from inbox inputs or templates</td>
+        <td>Humans (agents assist)</td>
+      </tr>
+      <tr>
+        <td><strong>human-gates/</strong></td>
+        <td>Decision points that require explicit human sign-off before proceeding</td>
+        <td>Humans only — agents may draft, never approve</td>
+      </tr>
+      <tr>
+        <td><strong>history/</strong></td>
+        <td>Completed or archived items; immutable record</td>
+        <td>Moved here when work closes</td>
+      </tr>
+      <tr>
+        <td><strong>playbooks/</strong></td>
+        <td>Repeatable process guides and templates</td>
+        <td>Team members; updated deliberately</td>
+      </tr>
+    </table>
+
+    <div class="note"><strong>Skills</strong> (AI capabilities) may be introduced later as an optional layer — they are not required for a basic Teamcell Lite setup.</div>
+  </div>
+  <div class="slide-footer">
+    <span>Teamcell Lite Onboarding · v0.1 · internal use only</span>
+    <span>2 / 8</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SLIDE 3 — Human vs Agent Responsibilities
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-3">
+  <div class="slide-num">Slide 3 of 8</div>
+  <h2>Human vs Agent Responsibilities</h2>
+  <div class="slide-body">
+    <p>Teamcell Lite is designed around a clear boundary: <strong>humans own decisions</strong>; agents handle drafting, scanning, and structuring.</p>
+
+    <div class="cols">
+      <div class="col">
+        <p><strong>Humans own:</strong></p>
+        <ul>
+          <li>All human-gate approvals</li>
+          <li>Decisions that affect live systems or people</li>
+          <li>Committing changes to source control</li>
+          <li>Adding confidential inputs to the workspace</li>
+          <li>Final review and sign-off</li>
+        </ul>
+      </div>
+      <div class="col">
+        <p><strong>Agents assist with:</strong></p>
+        <ul>
+          <li>Drafting work items from inbox inputs</li>
+          <li>Scanning for gaps, risks, or inconsistencies</li>
+          <li>Structuring notes into templates</li>
+          <li>Summarising context across surfaces</li>
+          <li>Suggesting — never deciding</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="warning">Agents in this workspace are <strong>advisory-only</strong>. They do not have autonomous write access to live systems. Every consequential action requires a human to confirm and execute.</div>
+
+    <p>This boundary is enforced by workspace configuration, not just convention. Human-gates exist specifically to make the boundary visible and auditable.</p>
+  </div>
+  <div class="slide-footer">
+    <span>Teamcell Lite Onboarding · v0.1 · internal use only</span>
+    <span>3 / 8</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SLIDE 4 — First Safe Use Cases
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-4">
+  <div class="slide-num">Slide 4 of 8</div>
+  <h2>First Safe Use Cases</h2>
+  <div class="slide-body">
+    <p>Start with low-risk, read-heavy tasks. These patterns are safe to try on day one:</p>
+
+    <table>
+      <tr>
+        <th>Use case</th>
+        <th>How it works</th>
+      </tr>
+      <tr>
+        <td><strong>Story / readiness review</strong></td>
+        <td>Drop a requirements document or story into <code>inbox/</code>. Ask an agent to scan it for gaps or missing acceptance criteria.</td>
+      </tr>
+      <tr>
+        <td><strong>Requirement → test ideas</strong></td>
+        <td>Agent drafts candidate test scenarios from a requirement. Human reviews and adapts before adding to test plans.</td>
+      </tr>
+      <tr>
+        <td><strong>QA risk scan</strong></td>
+        <td>Agent reviews a change description and flags risk areas. Human decides what to act on.</td>
+      </tr>
+      <tr>
+        <td><strong>Design-system consistency review</strong></td>
+        <td>Agent checks a component spec against stated design-system guidelines. Human validates findings.</td>
+      </tr>
+      <tr>
+        <td><strong>Meeting notes → work item</strong></td>
+        <td>Paste meeting notes into <code>inbox/</code>. Agent structures them into a draft work item. Human refines and files.</td>
+      </tr>
+      <tr>
+        <td><strong>Human gate capture</strong></td>
+        <td>Create a gate entry when a decision point is reached. Record who approved and when.</td>
+      </tr>
+    </table>
+
+    <div class="note">All of these keep humans in the loop at each step. Nothing is committed to live systems without explicit human action.</div>
+  </div>
+  <div class="slide-footer">
+    <span>Teamcell Lite Onboarding · v0.1 · internal use only</span>
+    <span>4 / 8</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SLIDE 5 — Data Policy
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-5">
+  <div class="slide-num">Slide 5 of 8</div>
+  <h2>Data Policy</h2>
+  <div class="slide-body">
+    <p>Teamcell Lite workspaces are typically stored in version-controlled repositories. Follow these rules at all times:</p>
+
+    <div class="warning">
+      <strong>Never commit the following to this workspace:</strong>
+      <ul style="margin-top:.5rem">
+        <li>Secrets, passwords, or credentials of any kind</li>
+        <li>Private keys, tokens, or API keys</li>
+        <li>Unapproved confidential business content</li>
+        <li>Personal data (names, emails, addresses) unless explicitly approved for this workspace</li>
+        <li>Customer or HR data unless explicitly approved</li>
+        <li>Content copied from third-party systems without authorisation</li>
+      </ul>
+    </div>
+
+    <p>These rules apply to all workspace surfaces: <code>inbox/</code>, <code>work/</code>, <code>human-gates/</code>, <code>history/</code>, and <code>playbooks/</code>.</p>
+
+    <p><strong>What belongs here:</strong> synthesised summaries, structured work items, decision records, process guides, and references to external sources — not the raw confidential source content itself.</p>
+
+    <p>If your organisation has a data classification policy, apply it before adding anything to the workspace. When in doubt, ask your workspace owner.</p>
+  </div>
+  <div class="slide-footer">
+    <span>Teamcell Lite Onboarding · v0.1 · internal use only</span>
+    <span>5 / 8</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SLIDE 6 — First Setup Steps
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-6">
+  <div class="slide-num">Slide 6 of 8</div>
+  <h2>First Setup Steps</h2>
+  <div class="slide-body">
+    <p>When you receive a new Teamcell Lite workspace, read these files in order before doing anything else:</p>
+
+    <ol>
+      <li><strong>README.md</strong> — workspace overview and purpose</li>
+      <li><strong>PROJECT.md</strong> — current project scope and objectives</li>
+      <li><strong>TEAM-PROFILE.md</strong> — team context, roles, and conventions</li>
+      <li><strong>AGENTS.md</strong> — which agents are configured and what they can do</li>
+      <li><strong>CONTEXT_INDEX.md</strong> — index of key context files</li>
+    </ol>
+
+    <p>Then follow this flow for your first work item:</p>
+
+    <pre><code>1. Add raw input to inbox/
+   (a note, export, or summary — no secrets)
+
+2. Create a work item from a template in work/
+   (or ask an agent to draft one from the inbox item)
+
+3. Review and refine the work item
+   (agent output is a starting point, not a final result)
+
+4. If a decision is needed, create a human-gate entry
+   (human approval required before proceeding)
+
+5. When complete, move the item to history/
+
+6. Run the workspace validator to check structure:
+   sh scripts/validate-cell.sh .</code></pre>
+
+    <div class="note">The validator catches structural issues early. Run it after any significant change to the workspace.</div>
+  </div>
+  <div class="slide-footer">
+    <span>Teamcell Lite Onboarding · v0.1 · internal use only</span>
+    <span>6 / 8</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SLIDE 7 — Install / Setup: Get the Team Cell on your computer
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-7">
+  <div class="slide-num">Slide 7 of 8</div>
+  <h2>Install / Setup: Get the Team Cell on your computer</h2>
+  <div class="slide-body">
+
+    <p><strong>Prerequisites:</strong></p>
+    <ul>
+      <li>Access to the GitHub repository (ask your team lead)</li>
+      <li>VS Code installed</li>
+      <li>GitHub Desktop is the easiest path for most users</li>
+      <li>Terminal is optional</li>
+      <li>Claude Code / Claude CLI is optional, not required</li>
+    </ul>
+
+    <div class="cols">
+      <div class="col">
+        <p><strong>Mac</strong></p>
+        <p><em>Option A — GitHub Desktop:</em></p>
+        <ol>
+          <li>Open GitHub Desktop</li>
+          <li>Clone the Team Cell repository</li>
+          <li>Choose a local folder</li>
+          <li>Open it in Visual Studio Code</li>
+        </ol>
+        <p style="margin-top:.8rem"><em>Option B — Terminal:</em></p>
+        <pre><code>git clone &lt;repo-url&gt;
+cd &lt;repo-folder&gt;
+code .</code></pre>
+      </div>
+      <div class="col">
+        <p><strong>Windows</strong></p>
+        <p><em>Option A — GitHub Desktop:</em></p>
+        <ol>
+          <li>Open GitHub Desktop</li>
+          <li>Clone the Team Cell repository</li>
+          <li>Choose a local folder</li>
+          <li>Open it in Visual Studio Code</li>
+        </ol>
+        <p style="margin-top:.8rem"><em>Option B — VS Code:</em></p>
+        <ol>
+          <li>Open VS Code</li>
+          <li>Choose "Clone Repository"</li>
+          <li>Paste the repository URL</li>
+          <li>Choose a local folder</li>
+          <li>Open the repository</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="note"><strong>Optional — Agent path (Claude Code / Claude CLI users only):</strong> If you already use Claude Code, open the Team Cell folder in Terminal and start Claude there. The agent will use <code>AGENTS.md</code>, <code>README.md</code>, and <code>CONTEXT_INDEX.md</code> as working context.</div>
+
+  </div>
+  <div class="slide-footer">
+    <span>Teamcell Lite Onboarding · v0.1 · internal use only</span>
+    <span>7 / 8</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SLIDE 8 — Q&A / Where to Go Next
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-8">
+  <div class="slide-num">Slide 8 of 8</div>
+  <h2>Questions &amp; Next Steps</h2>
+  <div class="slide-body">
+    <p>Use this time to ask questions about the workspace, the operating model, or how to apply it to your current work.</p>
+
+    <p><strong>Suggested discussion questions:</strong></p>
+    <ul>
+      <li>Which of the six use cases from slide 4 is most relevant to our current work?</li>
+      <li>What kinds of inputs do we already produce that could go into <code>inbox/</code>?</li>
+      <li>Are there decision points in our current workflow that should become human gates?</li>
+      <li>What data classification questions do we need to resolve before adding content?</li>
+    </ul>
+
+    <p><strong>Where to go next:</strong></p>
+    <ul>
+      <li>Read the files listed in slide 6 in your workspace</li>
+      <li>Try the inbox → work flow with a low-stakes real example</li>
+      <li>Run <code>sh scripts/validate-cell.sh .</code> to check the workspace structure</li>
+      <li>Contact your workspace owner with questions not covered here</li>
+    </ul>
+
+    <div class="note">The workspace <strong>README.md</strong> is the primary ongoing reference for this cell. Return to it whenever you are uncertain about scope, conventions, or data policy.</div>
+
+    <p style="margin-top:1.5rem; color:var(--muted); font-size:.85rem;">No external resources are linked from this deck. All reference material is in your local workspace.</p>
+  </div>
+  <div class="slide-footer">
+    <span>Teamcell Lite Onboarding · v0.1 · internal use only</span>
+    <span>8 / 8</span>
+  </div>
+</section>
+
+</body>
+</html>

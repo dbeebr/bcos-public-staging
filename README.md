@@ -68,7 +68,14 @@ BCOS is not a template set you copy once. It is an operating layer where structu
 
 ## Quickstart
 
-Two paths:
+Three paths:
+
+**Install path** — install a ready Teamcell Lite Cell from this repository:
+preview (no writes) → confirm → receipt → commit → start, then optional
+instruction blocks for your agents. Needs only Git and Python 3 with PyYAML,
+no account or token. Packages: the
+baseline, plus optional `teamcell-plus-profile` and `team-capability-pack`.
+Step by step: `docs/create-a-cell.md` ("Install path").
 
 **Operational path** — read `docs/create-a-cell.md`. It takes you from clone
 to a working Cell in your first hour: core surfaces, the three contracts
@@ -114,7 +121,10 @@ under `apps/setbrain/`.
 
 ```text
 README.md
-LICENSE
+LICENSE                              ← index: MIT vs CC BY 4.0 by path
+LICENSES/
+  MIT.txt
+  CC-BY-4.0.txt
 CONTRIBUTING.md
 CODE_OF_CONDUCT.md
 SECURITY.md
@@ -128,6 +138,9 @@ docs/
   public-private-boundary.md
   public-cell-target-structure.md   ← the two-shape model and Cell tiers
   create-a-cell.md                  ← first-hour operational path
+  teamcell-install-semantics.md     ← install modes and the preview-first contract
+  teamcell-gate-matrix.md           ← which decisions need a Human Gate per profile
+  project-instruction-inheritance.md ← one instruction core, many rendered surfaces
 templates/
   context-index.template.md
   task.template.md
@@ -138,9 +151,17 @@ templates/
 schemas/
   routing-frontmatter.schema.md     ← the tiered frontmatter contract
   completion-record.schema.md       ← what makes work actually done
+  teamcell-*.schema.md              ← packages, receipt, governance profile, ownership
 examples/
   neutral-cell/                     ← the primitives, one folder per artifact type
   setbrain-cell/                     ← a complete operating Cell with apps/setbrain/
+distribution/
+  teamcell-lite/
+    bootstrap-kit/                  ← the installable Teamcell Lite v0.4 kit
+    SOURCE-MANIFEST.json            ← kit provenance, version and content hash
+scripts/                            ← installer: preview, preflight, bootstrap, receipt, personalize
+reports/verification/
+  PUBLIC-CELL-RELEASE.md            ← how this release was verified
 ```
 
 ## Status
@@ -153,4 +174,14 @@ Publication of this extraction package requires a separate launch Human Gate. Se
 
 ## License
 
-The documentation, templates, and examples in this extraction package are released under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). See `LICENSE` for the full text.
+Two licenses, by path — see `LICENSE` for the exact scope table and
+`LICENSES/MIT.txt` / `LICENSES/CC-BY-4.0.txt` for the full unmodified texts:
+
+- **MIT** — the operative Teamcell Lite Cell package: `distribution/`,
+  `scripts/`, `schemas/`. Commercial and closed-source reuse is permitted.
+  `distribution/teamcell-lite/bootstrap-kit/LICENSE` carries the same text
+  and ships at the root of every installed Cell.
+- **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)** — the
+  existing explanatory documentation and teaching examples, unchanged by
+  this decision: `docs/`, `templates/`, `examples/`, and this README plus
+  `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md`.

@@ -26,7 +26,15 @@ schemas/
 examples/
   neutral-cell/      ← the primitives, one folder per artifact type
   setbrain-cell/      ← a complete operating Cell with an app package
+distribution/
+  teamcell-lite/     ← installable Teamcell Lite kit + SOURCE-MANIFEST.json
+scripts/             ← installer tools (preview, preflight, receipt, personalize)
+reports/verification/ ← release verification evidence (not installed into Cells)
 ```
+
+The Teamcell Lite kit is the installable form of an active Cell. It is
+installed with the preview-first installer (`docs/create-a-cell.md`,
+`docs/teamcell-install-semantics.md`), never by copying the repository root.
 
 ## Active Cell repo — three tiers, not one flat wall
 
@@ -38,13 +46,18 @@ into Tier 2; Cells that maintain a domain brain add Tier 3.
 **Tier 1 — Core (every Cell):**
 
 ```text
-README.md  PROJECT.md  AGENTS.md  CONTEXT_INDEX.md  TEAM.md
+README.md  PROJECT.md  AGENTS.md  CONTEXT_INDEX.md  TEAM.md (TEAM-PROFILE.md in Teamcell Lite)
 inbox/     work/     human-gates/     history/     playbooks/     scripts/
 ```
 
 Artifact templates live *in-surface* (`work/TEMPLATE.task.md`,
 `human-gates/TEMPLATE.human-gate.md`) — where agents already look. A separate
 `templates/` folder is a distribution-package surface, not a Cell default.
+Teamcell Lite is the one deliberate exception: its baseline ships
+`templates/` holding only the personalization sources that
+`scripts/personalize-team-cell.sh` renders into the Cell's `instructions/`
+folder, plus `packages/PACKAGES.yaml` and `.installation/` as package and
+installation metadata.
 
 **Tier 2 — Operating expansion (when unfamiliar contributors or agents
 operate the Cell):**
@@ -106,10 +119,10 @@ The full tiered contract lives in `schemas/routing-frontmatter.schema.md`.
 The short version — every artifact carries the core profile:
 
 ```yaml
-bcos_type: task | decision | report | record | proof | handoff | doc | template | index | state | schema | skill
+bcos_type: task | proposal | decision | council | review | brief | doc | synthesis | report | record | skill | schema | template | index | state | genesis_record
 id: <STABLE-ID>
 title: "<title>"
-status: draft | active | ready | done | archived
+status: <lifecycle value>
 created: YYYY-MM-DD
 created_by: <human-or-agent-id>
 surface: <folder-surface>
@@ -130,5 +143,6 @@ core profile.
 - `examples/setbrain-cell/` teaches the **operating shape**: tiered surfaces,
   a complete work loop with proof and handoff, and an app package.
 
-Read neutral-cell to understand the pieces. Copy setbrain-cell to start
-operating.
+Read neutral-cell to understand the pieces. Study setbrain-cell for the
+operating shape. To start operating with validator, start command and
+optional packages, install a Teamcell Lite Cell (`docs/create-a-cell.md`).
