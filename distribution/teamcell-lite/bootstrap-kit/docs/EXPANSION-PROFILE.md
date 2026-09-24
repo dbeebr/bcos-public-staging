@@ -72,7 +72,9 @@ baseline's `templates/` folder is different: it holds only the
 personalization sources (`PROJECT-INSTRUCTIONS`, the one shared
 instruction core; the thin `APP-INSTRUCTIONS-*` activation notes;
 `FIRST-RUN-AGENT-PROMPT`) that `scripts/render-instructions.py` renders —
-called by `personalize-team-cell.sh` — into `instructions/` and
+called by `scripts/personalize-cell.py` (the installer's mandatory,
+non-interactive personalization step) and by the interactive
+`personalize-team-cell.sh` — into `instructions/` and
 `FIRST-RUN-AGENT-PROMPT.md`. Do not put other templates there. `packages/PACKAGES.yaml` and `.installation/` are package and
 installation metadata, not work surfaces.
 

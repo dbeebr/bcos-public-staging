@@ -77,6 +77,11 @@ fi
 
 cp -R "$KIT_ROOT/." "$TARGET/"
 
+# The kit directory is a local checkout: running one of its scripts directly
+# leaves git-ignored bytecode behind, and cp -R would carry it into the new
+# Cell. Only tracked kit content belongs in an installed Cell.
+find "$TARGET" -name '__pycache__' -type d -prune -exec rm -rf {} + 2>/dev/null || true
+
 # teamcell-lite's teamcell-lite-baseline package excludes profiles/ (packages/
 # PACKAGES.yaml source_root of the two optional packages, teamcell-plus-
 # profile and team-capability-pack) -- baseline installs must not receive

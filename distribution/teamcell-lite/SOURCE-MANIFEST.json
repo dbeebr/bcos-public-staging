@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
   "product": "BCOS Teamcell Lite",
-  "version_label": "teamcell-lite-v0.4.0-rc.8",
+  "version_label": "teamcell-lite-v0.4.0-rc.9",
   "validated_install_modes": [
     "new_from_template"
   ],
@@ -12,9 +12,9 @@
   ],
   "kit": {
     "path": "distribution/teamcell-lite/bootstrap-kit",
-    "tree_sha256": "b329a9e5b8f03e449f298a7ec640bfdecd6e81f5881218b8e85f932d5b8a4835",
+    "tree_sha256": "60d20434c0e0a73830ccf89803c37e432461400235ebcc2f19f83858771826a3",
     "tree_sha256_algorithm": "sha256 over sorted '<relative-path>\\0<sha256-of-file>\\n' lines (scripts/teamcell-install-preview.py kit_tree_sha256)",
-    "file_count": 59,
+    "file_count": 60,
     "files": [
       {
         "path": ".bcos/CELL-GOVERNANCE.yaml.template",
@@ -30,7 +30,7 @@
       },
       {
         "path": ".gitignore",
-        "sha256": "3302cbaec3cc0a668c154eeed5d0ca87ff17e00b3e12349ab84a5dbf215fd5d8"
+        "sha256": "50bbfffc76c3e5e55562eb78723f35fcd18e39809b2fecd2d351b339159b51ab"
       },
       {
         "path": "AGENTS.md",
@@ -38,7 +38,7 @@
       },
       {
         "path": "CONTEXT_INDEX.md",
-        "sha256": "4735fffb5447f39f4acf2b051353d865f483aaacfefc4e1f77f96a2f1fb89555"
+        "sha256": "a3d2e41f0fcaf3301d5631ae0d516cfbc4101456c46c45f1f739c91d24ceb3fe"
       },
       {
         "path": "LICENSE",
@@ -58,7 +58,7 @@
       },
       {
         "path": "docs/EXPANSION-PROFILE.md",
-        "sha256": "2286d6fb0255ffb761771680409ee65890c6be5098cbfffce91efc590cbf24c0"
+        "sha256": "2f0c945c4a20015d3ce60265428d4132b153b31a8300be49a6053fc79e55ee83"
       },
       {
         "path": "docs/TEAMCELL-LITE-GENERIC-PUBLIC-ROUTING-DELTA-20260705.md",
@@ -122,7 +122,7 @@
       },
       {
         "path": "profiles/plus/ONBOARDING.md.template",
-        "sha256": "abc240b709dd8da26c7a5fae2ff35586b64372e240de97a131ce625958276a55"
+        "sha256": "9aa73603f472b79d2ed0b86685a3aa5530f5c957accd7f8c6f97bc7d41abe936"
       },
       {
         "path": "profiles/plus/README.md",
@@ -193,12 +193,16 @@
         "sha256": "823ba223c3f5d2d34a44584ab794eac6c49ad47b3f9cb58810af89fb901e3e8f"
       },
       {
+        "path": "scripts/personalize-cell.py",
+        "sha256": "4dd7b2ace940d0c27b6e8f1f9d90cb8cdd10b8db7801b2b831d3f8317fbe2203"
+      },
+      {
         "path": "scripts/render-instructions.py",
-        "sha256": "536a7930930008da1de8847270813eb5fc99af05d87dfd5627f7b0223ebd5dd0"
+        "sha256": "0bc84d342c9fa8f91ff707fcfc66c8062c0b10ac48608fd727906cb30a0c1f31"
       },
       {
         "path": "scripts/start-cell.sh",
-        "sha256": "6eea505a695c7d18a052186dc1dd7e0099f1bd85b2814ab9a1cb9ff38b2fd509"
+        "sha256": "b064e3589341f86e197aca761df2e8f7861c2606c8ab8eaeb0584c23913d7457"
       },
       {
         "path": "scripts/validate-cell.sh",
@@ -257,35 +261,35 @@
   "upstream": {
     "template": {
       "label": "canonical Teamcell Lite template (private upstream, not publicly accessible)",
-      "commit_sha": "d516fa3f44b3fd32018484b090aa3b0e9de9b92e"
+      "commit_sha": "2ad7e56eedec040a43667283b3d8fa9c29f12941"
     },
     "tools": {
       "label": "BCOS operator repository (private upstream, not publicly accessible)",
-      "commit_sha": "507e002e7847303e4d561b05218fe318db396bb2",
+      "commit_sha": "54ac7ef456ae14d53793b65afb355ca6a49c13ca",
       "files": {
         "scripts/teamcell-install-preview.py": {
-          "git_blob_sha": "af47b02f3bfa208031f84ef919eb613263fbc021",
-          "sha256": "ca678c5397f66fe7ade7e5116e8c452a41ea66665367fb5e85378f452b48051f"
+          "git_blob_sha": "b4b34b7631fa7a9f9fef553d1c0f077664e6ea42",
+          "sha256": "0aa2557f924ad37b18066768d790e281be25448f948cd55249a56489e8012ad1"
         },
         "scripts/teamcell-install-preflight.sh": {
           "git_blob_sha": "deb386028cca78d77a0846019fa31ce722e5c145",
           "sha256": "df503a7cb8538f5d737f3cce484c6776b23eef0875967f83d6684eea08b0f527"
         },
         "scripts/bootstrap-team-cell.sh": {
-          "git_blob_sha": "e806464741863ef4a4655d885d5ffb743b2dce8c",
-          "sha256": "182acb534b65c3c14722f6b8a3826e4a649407d5a6701559a04965ed80eef689"
+          "git_blob_sha": "8c5468c916ef716b250514f8db0ca9c9e1a6ea2b",
+          "sha256": "4214fc5352286019150907b9b1cdaf398dfda51019f4e40d46b845885cb3d4f7"
         },
         "scripts/resolve-cell-identity.py": {
-          "git_blob_sha": "74f53b1ee15d72501b3b5937548d9cd1e150f5de",
-          "sha256": "4fee4ad924a8c27bc4b36a37a7f53003e2ef3dd59092bb720f47baeb3b884682"
+          "git_blob_sha": "f2c23ff66253fa96ba21e478193f2c8f22e51d56",
+          "sha256": "a597e8a77feccec6fddc13848d562c24c45feaf213a25ecd6509f6266e3c91d1"
         },
         "scripts/generate-teamcell-installation-receipt.py": {
-          "git_blob_sha": "7d06a33e6256a4914f046400f4e48ee4b176c9a5",
-          "sha256": "5a7f59e91c7007c5141e7165e68522e509b495942423daeff8fd3c9d42bece6e"
+          "git_blob_sha": "cbd23e83ada21b58d626e8e4f90c1bea3836422a",
+          "sha256": "7f046e44523be4adee7c9e4c541caf81e8adaacdef39213cac6ecf54389cd1df"
         },
         "scripts/personalize-team-cell.sh": {
-          "git_blob_sha": "2a7ab21e693324bc936af9a1c9e7e9ded666a74b",
-          "sha256": "5982d0ff94688e824351bb970bc1f36d9e5094e490ef25da49938ea23fdd0aa8"
+          "git_blob_sha": "5be89ed8f7ca6c50accb312e1301ba7d5a112644",
+          "sha256": "2a2437363c8ec51e7d15a4fbb2c3d18b4ba8c27d4045351b17dcf33f70624a05"
         }
       }
     }

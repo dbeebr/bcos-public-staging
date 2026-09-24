@@ -55,7 +55,7 @@ Artifact templates live *in-surface* (`work/TEMPLATE.task.md`,
 `templates/` folder is a distribution-package surface, not a Cell default.
 Teamcell Lite is the one deliberate exception: its baseline ships
 `templates/` holding only the personalization sources that
-`scripts/personalize-team-cell.sh` renders into the Cell's `instructions/`
+`scripts/personalize-cell.py` (run by the installer) renders into the Cell's `instructions/`
 folder, plus `packages/PACKAGES.yaml` and `.installation/` as package and
 installation metadata.
 

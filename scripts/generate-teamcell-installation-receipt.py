@@ -52,6 +52,7 @@ DECISION_CLASSES = (
     "external_visibility",
 )
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+PERSONALIZATION_STATUSES = ("generated", "not_applicable")
 
 
 class ReceiptError(RuntimeError):
@@ -150,6 +151,20 @@ def validate_manifest(data: Dict[str, Any]) -> List[str]:
                 f"source_commit_sha: {pkg_sha!r}"
             )
 
+    personalization = data.get("personalization")
+    if personalization is not None:
+        status = (personalization or {}).get("status")
+        if status not in PERSONALIZATION_STATUSES:
+            errors.append(f"personalization.status must be one of {PERSONALIZATION_STATUSES}, got: {status!r}")
+        elif status == "generated":
+            required = personalization.get("required_outputs")
+            if not isinstance(required, list) or not required or not all(isinstance(x, str) and x for x in required):
+                errors.append("personalization.required_outputs must be a non-empty list of paths when status is generated")
+            elif "instructions/PROJECT-INSTRUCTIONS.md" not in required:
+                errors.append("personalization.required_outputs must include instructions/PROJECT-INSTRUCTIONS.md")
+        elif status == "not_applicable" and not str(personalization.get("reason") or "").strip():
+            errors.append("personalization.reason is required when status is not_applicable")
+
     rollback = data.get("rollback") or {}
     if rollback.get("method") not in ("git_revert", "git_reset_to_ref", "manual"):
         errors.append(f"rollback.method must be one of git_revert|git_reset_to_ref|manual, got: {rollback.get('method')!r}")
@@ -222,6 +237,25 @@ def reconcile_file_list(target: Path, files: Dict[str, Any]) -> List[str]:
     return errors
 
 
+def reconcile_personalization(target: Path, personalization: Optional[Dict[str, Any]], files: Dict[str, Any]) -> List[str]:
+    """A receipt that declares required personalized outputs must not be written
+    when one is absent from the tree or was never recorded as created (fail
+    closed: no successful first-use completion without the outputs)."""
+    errors: List[str] = []
+    if not personalization or personalization.get("status") != "generated":
+        return errors
+    created = set((files or {}).get("created") or []) | set((files or {}).get("changed") or [])
+    paths = list(personalization.get("required_outputs") or [])
+    if personalization.get("manifest"):
+        paths.append(personalization["manifest"])
+    for rel in paths:
+        if not (target / rel).is_file():
+            errors.append(f"personalization declares required output {rel} but it is absent from the installed tree")
+        elif rel not in created:
+            errors.append(f"personalization output {rel} is not listed under files.created — the receipt must match the confirmed preview")
+    return errors
+
+
 def build_receipt(data: Dict[str, Any], installation_id: Optional[str]) -> Dict[str, Any]:
     receipt = {
         "schema_version": "0.1",
@@ -236,6 +270,8 @@ def build_receipt(data: Dict[str, Any], installation_id: Optional[str]) -> Dict[
         "rollback": data.get("rollback"),
         "preview_confirmed": data.get("preview_confirmed"),
     }
+    if data.get("personalization") is not None:
+        receipt["personalization"] = data["personalization"]
     return receipt
 
 
@@ -373,6 +409,7 @@ def main(argv: Sequence[str]) -> int:
 
         tree_errors = reconcile_package_tree(target, data.get("installed_packages") or [])
         tree_errors += reconcile_file_list(target, data.get("files") or {})
+        tree_errors += reconcile_personalization(target, data.get("personalization"), data.get("files") or {})
         if tree_errors:
             print(
                 "REFUSED — installed_packages does not match the installed tree. "

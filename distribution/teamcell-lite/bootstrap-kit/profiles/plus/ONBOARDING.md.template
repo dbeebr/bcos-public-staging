@@ -16,10 +16,11 @@ agent_capability_class: local-worker | git-only-worker | chat-reviewer | read-on
 ---
 
 <!-- INSTALL TODO: this file ships with {{PLACEHOLDER}} markers and status:
-     draft. Fill in every {{...}} below, set status: active, and fill in the
-     frontmatter above before treating this as ready for onboarding — an
-     unfilled copy of this file reads as broken to a new teammate. install-plus-profile.sh
-     does not auto-substitute these; a human or agent session must. -->
+     draft. The installer's personalization step (scripts/personalize-cell.py)
+     fills every marker it can derive from verified facts (Cell name, update
+     link, frontmatter) and marks the rest OPEN — never guessed. Run it if
+     this comment is still here; an unfilled copy of this file reads as
+     broken to a new teammate. -->
 
 # {{CELL_NAME}} — start here
 

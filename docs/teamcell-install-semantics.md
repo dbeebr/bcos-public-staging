@@ -10,9 +10,11 @@ preview-before-mutation contract every install satisfies.
 1. Preview            scripts/teamcell-install-preview.py <target> [options]      (no writes)
 2. Human confirmation the human reviews the preview and explicitly agrees
 3. Confirmed install  ... same command ... --confirm --confirmed-by human:<id>
+                      (includes the mandatory personalization step: the new Cell's own
+                       scripts/personalize-cell.py generates instructions/ and fills the
+                       install-time slots; the preview listed every file it writes)
 4. Receipt            scripts/generate-teamcell-installation-receipt.py <target>
-5. Personalization    scripts/personalize-team-cell.sh <target>                    (optional)
-6. Daily start        cd <target> && ./scripts/start-cell.sh
+5. Daily start        cd <target> && ./scripts/start-cell.sh
 ```
 
 `scripts/bootstrap-team-cell.sh` is the low-level copy primitive the installer
@@ -110,6 +112,10 @@ Before anything is created, changed or deleted, every install displays:
   when none is selected (the line is never omitted);
 - owner and role configuration, including every class left `unresolved`;
 - every package to be installed, with its own source commit;
+- the personalization that will run — Cell name and how it was resolved,
+  repository, app surfaces, every generated file, the slots filled in place and
+  the facts that stay unresolved — or the explicit statement that it does not
+  run in this mode;
 - the exact files to be created or changed (for hydration, the real delta
   against the target, plus collisions);
 - the rollback path available afterwards.

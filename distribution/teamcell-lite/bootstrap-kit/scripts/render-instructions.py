@@ -84,6 +84,13 @@ FACT_KEYS = (
     "bound_human_display", "bound_human_id", "tone", "language", "timezone", "role_title",
     "created_date",
 )
+# Written by scripts/personalize-cell.py (the installer's mandatory
+# personalization step); `check` uses it to know which generated outputs this
+# Cell must have, so a missing required output fails instead of passing as
+# "0 generated instruction file(s) checked".
+PERSONALIZATION_MANIFEST = GENERATED_DIR / "PERSONALIZATION-MANIFEST.json"
+RECEIPT_PATH = Path(".installation") / "TEAMCELL-INSTALLATION-RECEIPT.yaml"
+TOKEN_RE = re.compile(r"\{\{[^{}\n]*\}\}|__[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+__")
 REQUIRED_PROCEDURE_FIELDS = ("id", "use_when", "not_when", "phase")
 KINDS = ("skill", "playbook", "workflow")
 
@@ -1048,6 +1055,128 @@ def receipt_packages(root: Path) -> Optional[List[str]]:
     return ids or None
 
 
+def receipt_required_outputs(root: Path) -> List[str]:
+    """Paths the installation receipt declares under personalization.required_outputs."""
+    receipt = root / RECEIPT_PATH
+    if not receipt.is_file():
+        return []
+    out: List[str] = []
+    in_block = in_list = False
+    for raw in receipt.read_text(encoding="utf-8").splitlines():
+        if re.match(r"^personalization:\s*$", raw):
+            in_block, in_list = True, False
+            continue
+        if in_block and raw and not raw.startswith(" "):
+            in_block = in_list = False
+        if not in_block:
+            continue
+        if re.match(r"^  required_outputs:\s*(\[\])?\s*$", raw):
+            in_list = not raw.rstrip().endswith("[]")
+            continue
+        if in_list:
+            match = re.match(r"^\s+-\s+\"?([^\"\s]+)\"?\s*$", raw)
+            if match:
+                out.append(match.group(1))
+            elif raw.strip() and not raw.startswith("    "):
+                in_list = False
+    return out
+
+
+def load_personalization_manifest(root: Path) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+    path = root / PERSONALIZATION_MANIFEST
+    if not path.is_file():
+        return None, None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        return None, f"personalization manifest {PERSONALIZATION_MANIFEST.as_posix()} is not valid JSON: {exc}"
+    if not isinstance(data, dict) or not isinstance(data.get("outputs"), list):
+        return None, f"personalization manifest {PERSONALIZATION_MANIFEST.as_posix()} lacks an 'outputs' list"
+    return data, None
+
+
+def write_personalization_manifest(root: Path, data: Dict[str, Any]) -> bool:
+    """Write the manifest only when its content changed. Returns True if written."""
+    path = root / PERSONALIZATION_MANIFEST
+    text = json.dumps(data, indent=2, ensure_ascii=False, sort_keys=False) + "\n"
+    if path.is_file() and path.read_text(encoding="utf-8") == text:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    return True
+
+
+def sync_manifest_hashes(root: Path, written: List[Path]) -> None:
+    """A rewritten generated file that the personalization manifest tracks keeps
+    its manifest entry current: `generate` and `refresh` are explicit re-render
+    commands, not hand edits, so the Cell check must not read them as such."""
+    manifest, _ = load_personalization_manifest(root)
+    if not manifest:
+        return
+    changed = False
+    for path in written:
+        rel = path.resolve().relative_to(root).as_posix()
+        for item in manifest["outputs"]:
+            if isinstance(item, dict) and item.get("path") == rel and item.get("sha256") != sha256_file(path):
+                item["sha256"] = sha256_file(path)
+                changed = True
+    if changed:
+        write_personalization_manifest(root, manifest)
+
+
+def check_personalization(cell: "Cell", fails: List[str], warns: List[str]) -> None:
+    """Required generated outputs must exist, match what was generated and carry
+    no unresolved substitution tokens.
+
+    Which outputs are required comes from the personalization manifest and from
+    the installation receipt (both written by the installer's mandatory
+    personalization step). An installed Cell that has neither and no generated
+    instructions predates that step: WARN with the exact repair command, never a
+    silent pass."""
+    root = cell.root
+    manifest, problem = load_personalization_manifest(root)
+    if problem:
+        fails.append(problem)
+    declared: Dict[str, str] = {}
+    for rel in receipt_required_outputs(root):
+        declared[rel] = "the installation receipt"
+    if manifest:
+        for item in manifest["outputs"]:
+            if isinstance(item, dict) and item.get("required") and item.get("path"):
+                declared[str(item["path"])] = "the personalization manifest"
+    for rel, source in sorted(declared.items()):
+        if not (root / rel).is_file():
+            fails.append(f"required generated output missing: {rel} (declared by {source}); "
+                         "run: python3 scripts/personalize-cell.py")
+    if manifest:
+        for item in manifest["outputs"]:
+            if not isinstance(item, dict) or not item.get("path") or not item.get("sha256"):
+                continue
+            rel = str(item["path"])
+            path = root / rel
+            if not path.is_file() or item.get("kind") not in ("project_block", "app_note"):
+                continue
+            if sha256_file(path) != item["sha256"]:
+                fails.append(f"generated output {rel} was edited by hand or changed after generation; "
+                             "change the inputs and re-run python3 scripts/personalize-cell.py "
+                             "(it reports a conflict instead of overwriting)")
+    generated = generated_files(cell)
+    if manifest:
+        for item in manifest["outputs"]:
+            if isinstance(item, dict) and item.get("kind") == "app_note" and (root / str(item.get("path"))).is_file():
+                generated.append(root / str(item["path"]))
+    for path in sorted(set(generated)):
+        text = path.read_text(encoding="utf-8")
+        found = sorted(set(TOKEN_RE.findall(text)))
+        if found:
+            fails.append(f"generated output {cell.rel(path)} contains unresolved substitution token(s): "
+                         + ", ".join(found[:5]))
+    if manifest is None and not problem and not declared and not generated and (root / RECEIPT_PATH).is_file():
+        warns.append("installed Cell has no generated project instructions "
+                     "(it predates the mandatory personalization step); run: "
+                     "python3 scripts/personalize-cell.py --surface chatgpt (see --help), then commit the result")
+
+
 def run_check(cell: Cell) -> Tuple[List[str], List[str], str]:
     fails: List[str] = []
     warns: List[str] = []
@@ -1103,6 +1232,7 @@ def run_check(cell: Cell) -> Tuple[List[str], List[str], str]:
             warns.append(f"generated instructions {rel} are over the {req.surface} target {req.char_target} ({budget_value(m)})")
         if source_hash(cell, entries, req.inputs()) != fields.get("render_source_sha256"):
             warns.append(f"generated instructions {rel} are stale (core, profile, procedure index or renderer changed); run: python3 scripts/render-instructions.py refresh — then re-paste; app activation stays self-reported")
+    check_personalization(cell, fails, warns)
     summary = (f"{len(entries)} procedure(s) indexed (index {index_version(entries)}), "
                f"{len(excluded)} not available, {len(generated_files(cell))} generated instruction file(s) checked")
     return fails, warns, summary
@@ -1224,13 +1354,16 @@ def main(argv: List[str]) -> int:
 
         if args.command == "refresh":
             refreshed = 0
+            refreshed_paths: List[Path] = []
             for path in generated_files(cell):
                 fields, _, _ = split_frontmatter(path.read_text(encoding="utf-8"))
                 req = request_from_inputs(json.loads(fields.get("render_inputs") or "{}"))
                 text, report = render_project_file(cell, req, entries)
                 path.write_text(text, encoding="utf-8")
                 refreshed += 1
+                refreshed_paths.append(path)
                 print(f"refreshed: {cell.rel(path)} — {budget_line(report)}")
+            sync_manifest_hashes(cell.root, refreshed_paths)
             if not refreshed:
                 print("no generated instruction files found")
             return EXIT_OK
@@ -1250,6 +1383,7 @@ def main(argv: List[str]) -> int:
             out_dir.mkdir(parents=True, exist_ok=True)
             text, report = render_project_file(cell, req, entries)
             (cell.root / PROJECT_OUT).write_text(text, encoding="utf-8")
+            written_paths: List[Path] = [cell.root / PROJECT_OUT]
             print(f"Generated: {cell.rel(cell.root / PROJECT_OUT)}")
             print(budget_line(report))
             surfaces = [s.strip() for s in args.surfaces.split(",") if s.strip()]
@@ -1259,12 +1393,14 @@ def main(argv: List[str]) -> int:
                 template = cell.root / "templates" / f"APP-INSTRUCTIONS-{surface}.template.md"
                 out = out_dir / f"APP-INSTRUCTIONS-{surface}.md"
                 out.write_text(fill_template(template.read_text(encoding="utf-8"), cell, req), encoding="utf-8")
+                written_paths.append(out)
                 print(f"Generated: {cell.rel(out)}")
             first_run = cell.root / FIRST_RUN_TEMPLATE
             if surfaces and first_run.is_file():
                 out = cell.root / FIRST_RUN_OUT
                 out.write_text(fill_template(first_run.read_text(encoding="utf-8"), cell, req), encoding="utf-8")
                 print(f"Generated: {cell.rel(out)}")
+            sync_manifest_hashes(cell.root, written_paths)
             return EXIT_OK
 
         if args.command == "fill":

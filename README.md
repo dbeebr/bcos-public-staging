@@ -71,8 +71,9 @@ BCOS is not a template set you copy once. It is an operating layer where structu
 Three paths:
 
 **Install path** — install a ready Teamcell Lite Cell from this repository:
-preview (no writes) → confirm → receipt → commit → start, then optional
-instruction blocks for your agents. Requires Git with a configured user name
+preview (no writes) → confirm → receipt → commit → start. The confirmed install
+already generates the Cell's ready-to-paste project instructions
+(`instructions/PROJECT-INSTRUCTIONS.md`). Requires Git with a configured user name
 and email, Python 3 with PyYAML, and a POSIX shell. Cloning this public
 repository and installing locally require no GitHub account or token.
 External AI services may require their own accounts or credentials.

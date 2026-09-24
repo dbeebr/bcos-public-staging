@@ -48,8 +48,10 @@ authority, evidence or available actions.
 ## The Cell instruction body
 
 `instructions/PROJECT-INSTRUCTIONS.md` is the only complete instruction body in
-a Cell. `scripts/personalize-team-cell.sh` asks for the surfaces and the role
-and calls the Cell's own `scripts/render-instructions.py`, which fills the core
+a Cell. The installer's mandatory personalization step
+(`scripts/personalize-cell.py`, run inside the new Cell) and the interactive
+`scripts/personalize-team-cell.sh` (surfaces and role) call the Cell's own
+`scripts/render-instructions.py`, which fills the core
 with Cell facts (repository, Cell name, local path, bound human and role,
 governance profile, tone, language, timezone — resolved from the installation
 receipt, the Cell's governance file and personalization input) and with the

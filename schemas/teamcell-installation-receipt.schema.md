@@ -82,6 +82,18 @@ rollback:
 preview_confirmed:
   confirmed_by: human:<id> | agent:<id>
   confirmed_at: <ISO 8601 UTC timestamp>
+
+personalization:                # optional, additive; absent in receipts written before it
+  status: generated | not_applicable
+  generator: scripts/personalize-cell.py
+  manifest: instructions/PERSONALIZATION-MANIFEST.json
+  required_outputs: [instructions/PROJECT-INSTRUCTIONS.md, instructions/APP-INSTRUCTIONS-<app>.md]
+  surfaces: [<app>, ...]
+  cell_name: <string> | null
+  cell_name_source: <string>
+  repository: <owner/repo> | null
+  unresolved: [{fact: <id>, where: <path>, reason: <string>}]
+  reason: <string>              # required when status: not_applicable
 ```
 
 ## Field rules
@@ -148,6 +160,18 @@ procedure, e.g. deleting a freshly created directory).
 only when the agent acted on explicit human instruction for this specific
 install. `confirmed_at` must not be later than `installed_at`.
 
+### `personalization` (optional)
+
+The outcome of the installer's mandatory personalization step. With `status:
+generated`, every `required_outputs` path and the `manifest` also appear under
+`files.created` and exist in the tree, and the generator refuses to write a
+receipt otherwise. The Cell's own check (`scripts/validate-cell.sh`) fails when
+one of the required outputs is later removed. `unresolved` lists facts that
+stay open (an unbound role, an undefined purpose); it never holds an invented
+value. `not_applicable` needs a `reason` (for example modes that never generate
+instruction files of an existing repository). Older receipts have no such
+block; the Cell then gets a warning with the repair command instead.
+
 ## Consistency rule
 
 The receipt must not record anything the preview did not show, and the
@@ -168,6 +192,9 @@ in files, governance or packages is an installer defect.
 - Installed packages reconcile with the tree (see the package manifest
   schema).
 - Every `files.created` / `files.changed` path exists in the installed tree.
+- When `personalization.status` is `generated`: `required_outputs` is a
+  non-empty list that includes `instructions/PROJECT-INSTRUCTIONS.md`; each
+  entry and the manifest exist and are listed under `files.created`.
 
 ## Example (illustrative, not a default)
 

@@ -28,7 +28,7 @@ this repository — no account, token or private repository needed.
 PyYAML (`python3 -m pip install --user pyyaml`), a POSIX shell. The GitHub CLI
 is not needed; cloning this public repository and installing locally require
 no GitHub account or token. External AI services may require their own
-accounts or credentials if you use the optional instruction-block step below.
+accounts or credentials if you paste the generated project instructions into them.
 This release candidate was tested on macOS only (Python 3.12
 with PyYAML 6; the Cell-side instruction renderer and validators also with
 the macOS system Python 3.9 without PyYAML). Linux and WSL on Windows are
@@ -44,15 +44,17 @@ MY_ID='your-name'
 git clone https://github.com/dbeebr/bcos-public-staging.git bcos
 cd bcos
 
-# 1. Preview: writes nothing. Optional packages: add
+# 1. Preview: writes nothing. --cell-name is the name your generated project
+#    instructions carry. Optional packages: add
 #    --optional-package teamcell-plus-profile, or
 #    --optional-package team-capability-pack (selects Plus too).
-python3 scripts/teamcell-install-preview.py ../my-cell --mode new_from_template
-
-# 2. Read the preview (source, kit integrity, packages, files, governance),
-#    then confirm exactly that target: the same command plus --confirm.
 python3 scripts/teamcell-install-preview.py ../my-cell --mode new_from_template \
-  --confirm --confirmed-by "human:$MY_ID"
+  --cell-name "My Cell"
+
+# 2. Read the preview (source, kit integrity, packages, generated files,
+#    governance), then confirm exactly that target: the same command plus --confirm.
+python3 scripts/teamcell-install-preview.py ../my-cell --mode new_from_template \
+  --cell-name "My Cell" --confirm --confirmed-by "human:$MY_ID"
 
 # 3. Write the durable installation receipt.
 python3 scripts/generate-teamcell-installation-receipt.py ../my-cell
@@ -65,14 +67,22 @@ git commit -m "Install Teamcell Lite"
 ```
 <!-- quickstart:end -->
 
-Optional, interactive — generate the project instruction block for your
-agents (ChatGPT, Claude, Copilot, Gemini or a local model host), rendered
-from the Cell's one shared instruction core, with its procedure index and a
-ChatGPT size check; then commit the generated files:
-
-```sh
-../bcos/scripts/personalize-team-cell.sh "$PWD"
-```
+The confirmed install has already generated your Cell's project instructions
+(part of step 2, listed in the preview, recorded in the receipt). Open
+`instructions/PROJECT-INSTRUCTIONS.md` and copy its fenced block into your
+ChatGPT, Claude, Copilot or Gemini project; `instructions/APP-INSTRUCTIONS-<app>.md`
+says where to paste it. The text is rendered from the Cell's one shared
+instruction core with your Cell name, repository, governance profile, bound
+human and the procedures actually installed, and is checked against the
+ChatGPT size limit. Facts nobody has decided yet — the Cell's purpose, a role
+without a bound human — stay marked open; nothing is guessed. Generated is not
+activated: pasting the block into an app is your step and is only ever
+self-reported. To change the apps or add personal preferences later, run
+`python3 scripts/personalize-cell.py --surface <app> --fact tone=direct` inside
+the Cell (it reports a conflict instead of overwriting a hand-edited generated
+file). `scripts/personalize-team-cell.sh` remains as the interactive
+alternative for Cells that predate this step; it stops on a Cell the installer
+already personalized.
 
 Then replace the fictional example team in `TEAM-PROFILE.md`, select a
 governance profile in `.bcos/CELL-GOVERNANCE.yaml` when ready, and create
@@ -89,7 +99,13 @@ What each step guarantees:
   `distribution/teamcell-lite/SOURCE-MANIFEST.json`, otherwise the receipt
   records the version as `+local-modifications`.
 - The receipt records source commit, version, packages and every installed
-  file; it refuses when packages and files disagree with the tree.
+  file — including the generated project instructions, which it also declares
+  as required outputs; it refuses when packages and files disagree with the tree.
+- The confirmed install generates the project instructions itself. The preview
+  lists every generated file; an install whose personalization fails, or whose
+  generated files are missing or fail the Cell's own check, is not reported as
+  installed, and `scripts/validate-cell.sh` fails later if a required generated
+  file is removed.
 - This distribution installs new Cells only (`new_from_template`). It
   refuses `hydrate_existing_repo` (known defect in this release: its
   post-install closeout fails after files were written) and

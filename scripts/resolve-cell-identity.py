@@ -136,12 +136,24 @@ _GENERIC_TITLES = {
 
 
 def resolve_display_name(target_path: Path, repository: Optional[str] = None) -> Resolution:
-    """Deterministic order (BRIEF-20260717-004 Scope A):
+    """Deterministic order (BRIEF-20260717-004 Scope A; 0 added by TASK-20260921-003):
+    0. an explicit setup name recorded in instructions/PERSONALIZATION-MANIFEST.json
     1. canonical PROJECT.md structured title
     2. canonical TEAM-PROFILE.md structured cell_name field, if present
     3. repository slug, transformed, as an explicit display fallback
     4. unresolved
     """
+    # A display name confirmed at setup (--cell-name) and recorded by the
+    # mandatory personalization step outranks derived names.
+    manifest_path = target_path / "instructions" / "PERSONALIZATION-MANIFEST.json"
+    if manifest_path.exists():
+        try:
+            manifest_cell = (json.loads(manifest_path.read_text(encoding="utf-8")) or {}).get("cell") or {}
+        except (ValueError, OSError):
+            manifest_cell = {}
+        if manifest_cell.get("name") and manifest_cell.get("name_source") == "explicit":
+            return Resolution(str(manifest_cell["name"]), "personalization_manifest", True)
+
     project_fm = _read_frontmatter(target_path / "PROJECT.md")
     if project_fm and project_fm.get("title"):
         title = str(project_fm["title"]).strip()

@@ -142,6 +142,19 @@ for required in AGENTS.md CONTEXT_INDEX.md TEAM-PROFILE.md; do
   [ -f "$target_path/$required" ] ||
     die "Target does not look like a BCOS team cell (missing $required): $target_path"
 done
+# An installer-personalized Cell (TASK-20260921-003) manages instructions/ through
+# instructions/PERSONALIZATION-MANIFEST.json. This wizard writes the same files
+# without updating that manifest, which would make the Cell's own check fail on
+# files the wizard itself generated -- one writer only.
+if [ -f "$target_path/instructions/PERSONALIZATION-MANIFEST.json" ]; then
+  printf '%s\n' \
+    'This Cell was personalized by the installer (instructions/PERSONALIZATION-MANIFEST.json).' \
+    'This wizard would write the same files without updating that manifest, so it stops here.' \
+    'To change surfaces, personal preferences or the reviewed/activated flags, run in the Cell:' \
+    '  python3 scripts/personalize-cell.py --surface <app> --fact tone=... --reviewed true --activated true' \
+    '(see --help; it reports a conflict instead of overwriting a hand-edited file.) No files were written.' >&2
+  exit 3
+fi
 renderer="$target_path/scripts/render-instructions.py"
 for required in scripts/render-instructions.py .bcos/CELL-PROFILE.yaml templates/PROJECT-INSTRUCTIONS.template.md; do
   [ -f "$target_path/$required" ] ||

@@ -18,6 +18,17 @@ Implements the contract in
   `scripts/generate-teamcell-installation-receipt.py` consumes to produce
   the durable receipt.
 
+Personalization is part of the confirmed install, not an optional follow-up
+(repair of a first-use finding: an installed Cell had no project instructions): after
+the kit, packages and governance are written, the installed Cell's own
+`scripts/personalize-cell.py` renders the ready-to-paste project instructions
+(`instructions/`), fills the install-time slots of `ONBOARDING.md` and links the
+instructions from the onboarding files, using only confirmed setup data and
+facts read back from the Cell. The preview lists every generated file, the
+manifest records them, the receipt declares them as required outputs, and an
+install whose personalization or check fails is not reported as installed.
+Unknown facts stay explicitly unresolved; no role is bound and nothing is invented.
+
 This script never writes into the template or any other existing Cell — it
 only reads from declared source repositories and writes into the
 caller-specified TARGET directory.
@@ -99,6 +110,17 @@ MANIFEST_RELATIVE_PATH = Path(".installation") / "INSTALL-PREVIEW-MANIFEST.json"
 # proof runs mechanically at confirm time, before any agent session, and
 # must never be mistaken for that later, richer proof.
 CLOSEOUT_PROOF_RELATIVE_PATH = Path(".installation") / "INSTALL-CLOSEOUT-PROOF.md"
+# Mandatory personalization step (see module docstring). Cell-side script,
+# shipped in the kit; the installer never renders instructions itself.
+PERSONALIZE_SCRIPT_RELATIVE = "scripts/personalize-cell.py"
+PERSONALIZATION_MANIFEST_RELATIVE = "instructions/PERSONALIZATION-MANIFEST.json"
+PERSONALIZATION_RECORD_RELATIVE = "reports/verification/POST-INSTALL-PERSONALIZATION.md"
+APP_INSTRUCTION_SURFACES = ("copilot", "chatgpt", "claude", "gemini", "other")
+PERSONALIZATION_KIT_FILES = (
+    PERSONALIZE_SCRIPT_RELATIVE,
+    ".bcos/CELL-PROFILE.yaml",
+    "templates/PROJECT-INSTRUCTIONS.template.md",
+)
 PACKAGES_MANIFEST_RELATIVE_PATH = Path("packages") / "PACKAGES.yaml"
 SOURCE_MANIFEST_RELATIVE_PATH = Path("distribution") / "teamcell-lite" / "SOURCE-MANIFEST.json"
 
@@ -329,6 +351,10 @@ def list_files(root: Path) -> List[str]:
             continue
         rel_parts = p.relative_to(root).parts
         if rel_parts and rel_parts[0] == ".git":
+            continue
+        # Bytecode is never kit content (bootstrap-team-cell.sh removes it from
+        # the new Cell), so the preview must not promise it either.
+        if "__pycache__" in rel_parts:
             continue
         out.append(str(p.relative_to(root)))
     return sorted(out)
@@ -640,6 +666,7 @@ class PreviewContext:
     files_collision_preview: List[str] = field(default_factory=list)
     rollback_preview: Dict[str, Any] = field(default_factory=dict)
     distribution: Optional[Dict[str, Any]] = None
+    personalization: Dict[str, Any] = field(default_factory=dict)
 
 
 def resolve_kit_root(repo_root: Path, variant: str) -> Path:
@@ -689,6 +716,156 @@ def refuse_unvalidated_distribution_mode(repo_root: Path, mode: str, variant: st
         "Repair: install a new Cell into an empty or absent directory with "
         "--mode new_from_template. Nothing was previewed or written."
     )
+
+
+# --------------------------------------------------------------------------
+# Mandatory personalization (project instructions and install-time slots)
+# --------------------------------------------------------------------------
+
+
+def title_from_repository_slug(repository: str) -> str:
+    """Same derivation as scripts/personalize-cell.py (kit) and
+    scripts/resolve-cell-identity.py: the repository name, title-cased. Used
+    only to show the Cell name the preview will record."""
+    return re.sub(r"[-_]+", " ", repository.split("/")[-1]).strip().title()
+
+
+def resolve_instruction_surfaces(values: Sequence[str]) -> List[str]:
+    if not values:
+        return list(APP_INSTRUCTION_SURFACES)
+    chosen: List[str] = []
+    for value in values:
+        for part in value.split(","):
+            part = part.strip()
+            if part == "all":
+                chosen.extend(APP_INSTRUCTION_SURFACES)
+            elif part in ("", "none"):
+                continue
+            elif part in APP_INSTRUCTION_SURFACES:
+                chosen.append(part)
+            else:
+                raise InstallRefused(
+                    f"--instruction-surface {part!r} is not one of {', '.join(APP_INSTRUCTION_SURFACES)}, all, none. "
+                    "Nothing was previewed or written."
+                )
+    return [surface for surface in APP_INSTRUCTION_SURFACES if surface in chosen]
+
+
+def unbound_roles(governance: Dict[str, Any]) -> List[str]:
+    """Roles the ownership block names but no human is bound to. Read from the
+    confirmed governance input; never guessed, never bound here."""
+    bindings = governance.get("role_bindings") or {}
+    referenced: List[str] = []
+    if governance.get("cell_owner_role"):
+        referenced.append(governance["cell_owner_role"])
+    for role in (governance.get("decision_owner_roles") or {}).values():
+        if role and role != "unresolved" and role not in referenced:
+            referenced.append(role)
+    return [role for role in referenced if not (bindings.get(role) or {}).get("human_id")]
+
+
+def plan_personalization(ctx: "PreviewContext", kit_root: Path, plus_selected: bool) -> Dict[str, Any]:
+    """What the mandatory personalization step will generate — shown in the
+    preview and later reconciled with the tree, the manifest and the receipt."""
+    args = ctx.args
+    if ctx.mode != "new_from_template":
+        return {
+            "applicable": False,
+            "reason": f"not run in mode {ctx.mode}: instruction files of an existing repository are never "
+                      "generated or overwritten here; run python3 scripts/personalize-cell.py in the Cell "
+                      "after reviewing it",
+        }
+    missing = [rel for rel in PERSONALIZATION_KIT_FILES if not (kit_root / rel).is_file()]
+    if missing:
+        if args.variant == "teamcell-lite":
+            raise InstallRefused(
+                "This Teamcell Lite kit ships no personalization step (missing: " + ", ".join(missing) + ").\n"
+                "An install without ready project instructions is not a usable Cell. Repair: use a "
+                "distribution built from a kit that carries scripts/personalize-cell.py. Nothing was previewed or written."
+            )
+        return {"applicable": False, "reason": f"variant {args.variant} has no instruction renderer"}
+    surfaces = resolve_instruction_surfaces(args.instruction_surface)
+    if args.cell_name:
+        name, name_source = args.cell_name, "--cell-name"
+    elif args.target_repo:
+        name = title_from_repository_slug(args.target_repo)
+        name_source = "derived from the repository name — pass --cell-name to set it"
+    else:
+        name, name_source = None, "unresolved — pass --cell-name (or --target-repo) to set it"
+    outputs = ["instructions/PROJECT-INSTRUCTIONS.md"]
+    outputs += [f"instructions/APP-INSTRUCTIONS-{surface}.md" for surface in surfaces]
+    outputs += [PERSONALIZATION_MANIFEST_RELATIVE, PERSONALIZATION_RECORD_RELATIVE]
+    filled_in_place = ["README.md (link to the ready instructions)"]
+    open_items = [f"role '{role}' is named but has no human bound (left unbound)" for role in unbound_roles(ctx.governance)]
+    if plus_selected:
+        filled_in_place.append("ONBOARDING.md (Cell name, Cell Update link, frontmatter; link to the ready instructions)")
+        if not args.cell_purpose:
+            open_items.append("Cell purpose in ONBOARDING.md (never guessed; pass --cell-purpose or edit PROJECT.md)")
+    if not args.target_repo:
+        open_items.append("repository (no --target-repo: instructions show it as unresolved)")
+    if not ctx.governance.get("governance_profile"):
+        open_items.append("governance profile (not selected)")
+    return {
+        "applicable": True,
+        "script": PERSONALIZE_SCRIPT_RELATIVE,
+        "surfaces": surfaces,
+        "cell_name": name,
+        "cell_name_source": name_source,
+        "repository": args.target_repo,
+        "generated_files": outputs,
+        "filled_in_place": filled_in_place,
+        "open_items": open_items,
+        "chatgpt_budget": "checked when chatgpt is selected: target 7200, hard limit 8000 characters",
+        "readiness": "the install is not reported as installed unless these outputs exist and pass the Cell's own check",
+    }
+
+
+def run_personalization(ctx: "PreviewContext") -> Dict[str, Any]:
+    """Run the installed Cell's own personalization script (single rendering
+    path). Any failure aborts the install as a mutation failure."""
+    script = ctx.target / PERSONALIZE_SCRIPT_RELATIVE
+    if not script.is_file():
+        raise MutationFailed(f"personalization script missing in the installed Cell: {script}")
+    plan = ctx.personalization
+    cmd = [sys.executable, str(script), "--root", str(ctx.target), "apply", "--json",
+           "--confirmed-by", str(ctx.args.confirmed_by), "--created-date", today(),
+           "--surface", ",".join(plan["surfaces"]) if plan["surfaces"] else "none"]
+    if ctx.args.cell_name:
+        cmd += ["--cell-name", ctx.args.cell_name]
+    if ctx.args.cell_purpose:
+        cmd += ["--cell-purpose", ctx.args.cell_purpose]
+    if ctx.args.target_repo:
+        cmd += ["--repository", ctx.args.target_repo]
+    for pkg in ctx.installed_packages:
+        cmd += ["--installed-package", str(pkg["package_id"])]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        data = json.loads(result.stdout)
+    except ValueError:
+        data = None
+    if result.returncode != 0 or not isinstance(data, dict):
+        raise MutationFailed(
+            f"personalization ({PERSONALIZE_SCRIPT_RELATIVE} apply) failed (exit {result.returncode}):\n"
+            f"{result.stdout}\n{result.stderr}"
+        )
+    return data
+
+
+def personalization_manifest_block(ctx: "PreviewContext", mutation: "MutationResult") -> Dict[str, Any]:
+    if not ctx.personalization.get("applicable") or mutation.personalization is None:
+        return {"status": "not_applicable", "reason": ctx.personalization.get("reason", "not applicable")}
+    data = mutation.personalization
+    return {
+        "status": "generated",
+        "generator": PERSONALIZE_SCRIPT_RELATIVE,
+        "manifest": PERSONALIZATION_MANIFEST_RELATIVE,
+        "required_outputs": data.get("required_outputs") or [],
+        "surfaces": data.get("surfaces") or [],
+        "cell_name": data.get("cell_name"),
+        "cell_name_source": data.get("cell_name_source"),
+        "repository": data.get("repository"),
+        "unresolved": data.get("unresolved") or [],
+    }
 
 
 def build_context(args: argparse.Namespace, repo_root: Path) -> PreviewContext:
@@ -850,6 +1027,13 @@ def build_context(args: argparse.Namespace, repo_root: Path) -> PreviewContext:
         else:
             ctx.files_created_preview = [] if not kit_root.exists() else list_files(kit_root)
         ctx.files_created_preview.append(".bcos/CELL-GOVERNANCE.yaml")
+        ctx.personalization = plan_personalization(
+            ctx, kit_root, any(pkg["package_id"] == "teamcell-plus-profile" for pkg in ctx.installed_packages)
+        )
+        if ctx.personalization.get("applicable"):
+            ctx.files_created_preview = sorted(
+                set(ctx.files_created_preview) | set(ctx.personalization["generated_files"])
+            )
         ctx.rollback_preview = {
             "method": "manual",
             "ref": None,
@@ -863,6 +1047,7 @@ def build_context(args: argparse.Namespace, repo_root: Path) -> PreviewContext:
         ctx.files_created_preview = created
         ctx.files_changed_preview = changed
         ctx.files_collision_preview = collisions
+        ctx.personalization = plan_personalization(ctx, kit_root, False)
         pre_head, _ = resolve_local_commit_sha(target, "HEAD") if (target / ".git").exists() else (None, "no local .git")
         ctx.rollback_preview = (
             {"method": "git_reset_to_ref", "ref": pre_head, "notes": "Reset the target to its pre-install HEAD."}
@@ -875,6 +1060,7 @@ def build_context(args: argparse.Namespace, repo_root: Path) -> PreviewContext:
         )
     else:  # clone_existing_cell
         clone_paths = args.clone_paths or ["(full source tree)"]
+        ctx.personalization = plan_personalization(ctx, resolve_kit_root(repo_root, args.variant), False)
         ctx.files_created_preview = clone_paths
         ctx.clone_source_sha = sha
         ctx.clone_source_diagnostic = diag
@@ -917,6 +1103,30 @@ def render_governance_lines(governance: Dict[str, Any]) -> List[str]:
     return lines
 
 
+def render_personalization_lines(plan: Dict[str, Any]) -> List[str]:
+    lines = ["personalization (mandatory part of --confirm; generated from confirmed setup data, nothing invented):"]
+    if not plan.get("applicable"):
+        lines.append(f"  not applicable — {plan.get('reason', 'no personalization plan')}")
+        return lines
+    lines.append(f"  script: {plan['script']} (the installed Cell's own; single rendering path)")
+    lines.append(f"  cell_name: {plan['cell_name'] or 'unresolved'} ({plan['cell_name_source']})")
+    lines.append(f"  repository: {plan['repository'] or 'unresolved'}")
+    lines.append(f"  instruction_surfaces: {', '.join(plan['surfaces']) or 'none (shared project block only)'}")
+    lines.append(f"  generated files ({len(plan['generated_files'])}, included in the file list below and in the receipt):")
+    for rel in plan["generated_files"]:
+        lines.append(f"    + {rel}")
+    lines.append("  filled in place (exact known slots only; human text is never touched):")
+    for item in plan["filled_in_place"]:
+        lines.append(f"    ~ {item}")
+    lines.append("  stays unresolved, never guessed:")
+    for item in plan["open_items"] or ["nothing known"]:
+        lines.append(f"    ! {item}")
+    lines.append(f"  budget: {plan['chatgpt_budget']}")
+    lines.append(f"  readiness: {plan['readiness']}")
+    lines.append("  lifecycle: generated is not reviewed, not activated in any app, not team-ready")
+    return lines
+
+
 def render_preview_text(ctx: PreviewContext) -> str:
     lines: List[str] = []
     lines.append("=" * 78)
@@ -952,6 +1162,8 @@ def render_preview_text(ctx: PreviewContext) -> str:
     lines.append("installed_packages:")
     for pkg in ctx.installed_packages:
         lines.append(f"  - {pkg['package_id']}: {pkg['source_repository']}@{pkg['source_commit_sha']} ({pkg['version_label']})")
+    lines.append("")
+    lines.extend(render_personalization_lines(ctx.personalization))
     lines.append("")
     lines.append("files:")
     lines.append(f"  created ({len(ctx.files_created_preview)}):")
@@ -1003,6 +1215,7 @@ def render_preview_json(ctx: PreviewContext) -> Dict[str, Any]:
         },
         "governance": ctx.governance,
         "installed_packages": ctx.installed_packages,
+        "personalization": ctx.personalization,
         "files": {
             "created": ctx.files_created_preview,
             "changed": ctx.files_changed_preview,
@@ -1050,6 +1263,7 @@ class MutationResult:
     skipped_collisions: List[str] = field(default_factory=list)
     pre_install_head: Optional[str] = None
     notes: str = ""
+    personalization: Optional[Dict[str, Any]] = None
 
 
 def write_governance_file_if_absent(target: Path, governance: Dict[str, Any]) -> Optional[str]:
@@ -1339,13 +1553,17 @@ def mutate_new_from_template(ctx: PreviewContext) -> MutationResult:
                 dest = ctx.target / target_rel
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, dest)
+    write_governance_file_if_absent(ctx.target, ctx.governance)
+    sync_team_profile(ctx.target, ctx.governance, confirmed_by=ctx.args.confirmed_by)
+    # Mandatory personalization runs last: it reads the just-written governance
+    # file and the installed procedures, so its facts are the Cell's own.
+    personalization = run_personalization(ctx) if ctx.personalization.get("applicable") else None
     post_files = set(list_files(ctx.target))
     created = sorted(post_files - pre_files)
-    gov_written = write_governance_file_if_absent(ctx.target, ctx.governance)
-    if gov_written:
-        created.append(gov_written)
-    sync_team_profile(ctx.target, ctx.governance, confirmed_by=ctx.args.confirmed_by)
-    return MutationResult(created=sorted(created), changed=[], pre_install_head=pre_head, notes=result.stdout)
+    return MutationResult(
+        created=created, changed=[], pre_install_head=pre_head, notes=result.stdout,
+        personalization=personalization,
+    )
 
 
 def mutate_hydrate_existing_repo(ctx: PreviewContext) -> MutationResult:
@@ -1487,6 +1705,24 @@ def run_closeout(ctx: "PreviewContext", mutation: "MutationResult") -> Tuple[boo
     else:
         record("scripts/validate-cell.sh", True, "not present in this Cell — skipped")
 
+    if ctx.personalization.get("applicable"):
+        required = (mutation.personalization or {}).get("required_outputs") or []
+        missing = [rel for rel in required if not (target / rel).is_file()]
+        record(
+            "required personalized outputs exist",
+            bool(required) and not missing,
+            ("missing: " + ", ".join(missing)) if missing else
+            ("no required outputs were reported by the personalization step" if not required
+             else f"{len(required)} required output(s) present: " + ", ".join(required)),
+        )
+        r = subprocess.run(
+            [sys.executable, str(target / PERSONALIZE_SCRIPT_RELATIVE), "--root", str(target), "check"],
+            capture_output=True, text=True,
+        )
+        record("personalization check (scripts/personalize-cell.py check)", r.returncode == 0, r.stdout + r.stderr)
+    else:
+        record("personalization", True, "not applicable — " + str(ctx.personalization.get("reason", "")))
+
     start_script = target / "scripts" / "start-cell.sh"
     if start_script.exists():
         r = subprocess.run(
@@ -1611,6 +1847,7 @@ def write_manifest(ctx: PreviewContext, mutation: MutationResult) -> Path:
         "target": {"repository": ctx.args.target_repo, "path": str(ctx.target)},
         "governance": ctx.governance,
         "installed_packages": ctx.installed_packages,
+        "personalization": personalization_manifest_block(ctx, mutation),
         "files": {"created": mutation.created, "changed": mutation.changed},
         "rollback": ctx.rollback_preview,
         "preview_confirmed": {
@@ -1647,6 +1884,9 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
     p.add_argument("--clone-paths", nargs="*", default=None, help="restrict clone copy to these repo-relative paths (default: full tree)")
     p.add_argument("--carry-over-governance", action="store_true", help="clone_existing_cell only: carry over the source Cell's governance/ownership instead of resetting to unresolved")
     p.add_argument("--target-repo", default=None, help="owner/repo the target will have as its GitHub remote")
+    p.add_argument("--cell-name", default=None, help="display name of the Cell, used in the generated project instructions (default: derived from --target-repo and shown as derived in the preview)")
+    p.add_argument("--cell-purpose", default=None, help="one-sentence purpose for ONBOARDING.md (Teamcell Plus); never guessed, shown as open when omitted")
+    p.add_argument("--instruction-surface", action="append", default=[], help="app surface to generate an activation note for (copilot, chatgpt, claude, gemini, other, all, none); repeatable; default: all. The shared project block is always generated")
     p.add_argument("--governance-profile", choices=GOVERNANCE_PROFILES, default=None)
     p.add_argument("--governance-selected-by", default=None, help="human:<id> or agent:<id> — required with --governance-profile")
     p.add_argument("--cell-owner-role", default=None)
@@ -1811,9 +2051,21 @@ def main(argv: Sequence[str]) -> int:
     needs_you = "none from this step."
     if ctx.governance.get("legacy_unresolved"):
         needs_you = "select a governance profile (--governance-profile / --governance-selected-by)."
+    personalization = mutation.personalization or {}
+    open_items = [item["fact"] for item in (personalization.get("unresolved") or [])]
+    if open_items:
+        note = "open, never guessed: " + ", ".join(open_items)
+        needs_you = note if needs_you.startswith("none") else f"{needs_you} Also {note}."
     print("Teamcell installed: PASS")
     print(f"Repository: {ctx.args.target_repo or '(local-only; no --target-repo given)'}")
     print(f"Start: cd {ctx.target} && ./scripts/start-cell.sh")
+    if ctx.personalization.get("applicable"):
+        print(f"Ready-to-paste project instructions: {ctx.target / 'instructions' / 'PROJECT-INSTRUCTIONS.md'}")
+        if "chatgpt" in ctx.personalization["surfaces"]:
+            print(f"  ChatGPT activation note: {ctx.target / 'instructions' / 'APP-INSTRUCTIONS-chatgpt.md'}")
+        if ctx.args.target_repo:
+            print(f"  On GitHub after you commit and push: https://github.com/{ctx.args.target_repo}/blob/main/instructions/PROJECT-INSTRUCTIONS.md")
+        print("  Generated from this Cell's own facts — not reviewed, not activated in any app, not team-ready.")
     print(f"Needs you: {needs_you}")
     if not args.verbose:
         print()
@@ -1821,8 +2073,9 @@ def main(argv: Sequence[str]) -> int:
         print("Next step — generate the durable installation receipt:")
         print(f"  python3 {repo_root / 'scripts' / 'generate-teamcell-installation-receipt.py'} \\")
         print(f"    {ctx.target} --from-manifest {manifest_path}")
-        print("Then, optionally, generate app instruction blocks (interactive):")
-        print(f"  {repo_root / 'scripts' / 'personalize-team-cell.sh'} {ctx.target}")
+        if not ctx.personalization.get("applicable"):
+            print("Project instructions were NOT generated in this mode; generate them after reviewing the Cell:")
+            print(f"  python3 {ctx.target / PERSONALIZE_SCRIPT_RELATIVE} --root {ctx.target}")
     return EXIT_INSTALLED
 
 
