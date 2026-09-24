@@ -54,7 +54,7 @@ Work happens inside a Cell
   → The Library makes future work faster and more reliable
 ```
 
-BCOS is not a template set you copy once. It is an operating layer where structured work produces compounding, reusable value. See `docs/library.md` for the full Library concept, `docs/cell-story.md` for a narrative walkthrough of how Cells grow, and `docs/why-these-surfaces.md` for the reasoning behind each surface — why Library exists, why History and Reports are separate, and why there is no top-level code surface.
+BCOS is not a template set you copy once. It is an operating layer where structured work produces compounding, reusable value. See [`docs/library.md`](docs/library.md) for the full Library concept, [`docs/cell-story.md`](docs/cell-story.md) for a narrative walkthrough of how Cells grow, and [`docs/why-these-surfaces.md`](docs/why-these-surfaces.md) for the reasoning behind each surface — why Library exists, why History and Reports are separate, and why there is no top-level code surface.
 
 ## Five-Minute Mental Model
 
@@ -75,14 +75,19 @@ preview (no writes) → confirm → receipt → commit → start, then optional
 instruction blocks for your agents. Needs only Git and Python 3 with PyYAML,
 no account or token. Packages: the
 baseline, plus optional `teamcell-plus-profile` and `team-capability-pack`.
-Step by step: `docs/create-a-cell.md` ("Install path").
+Step by step: [`docs/create-a-cell.md`](docs/create-a-cell.md) ("Install
+path").
 
-**Operational path** — read `docs/create-a-cell.md`. It takes you from clone
+**Operational path** — read [`docs/create-a-cell.md`](docs/create-a-cell.md). It takes you from clone
 to a working Cell in your first hour: core surfaces, the three contracts
 (Context Index, agent contract, team file), your first work loop with a
 Completion Record, and the rule for when to add more surfaces.
 
-**Template path** — start with six files:
+**Template path** — for building your own Cell shape by hand instead of
+installing the kit. Its `tasks/TASK.template.md` is a generic starting
+template; it is a different file from the installed Teamcell Lite Cell's own
+`work/TEMPLATE.task.md` (install path), which is the one an installed Cell's
+agents actually use. Start with six files:
 
 ```text
 CONTEXT_INDEX.md              ← use templates/context-index.template.md
@@ -166,11 +171,23 @@ reports/verification/
 
 ## Status
 
-BCOS v0.1 is experimental. It is a working standard, not a finished product.
+BCOS v0.1 is the conceptual standard's version — the operating model described
+above is experimental, a working standard rather than a finished product. The
+package actually delivered in this repository is a separate, versioned
+artifact: an installable Teamcell Lite Cell (installer, validators,
+instruction renderer, baseline plus optional packages). Its exact version,
+source pins and content hash are the source of truth, not this page — see
+[`distribution/teamcell-lite/SOURCE-MANIFEST.json`](distribution/teamcell-lite/SOURCE-MANIFEST.json).
 
 This extraction package is a curated surface: useful enough to try, small enough to understand, and careful enough not to expose private operating history.
 
-Publication of this extraction package requires a separate launch Human Gate. See `docs/public-private-boundary.md`.
+This staging distribution has already been published to this repository (see
+[`reports/verification/PUBLIC-CELL-RELEASE.md`](reports/verification/PUBLIC-CELL-RELEASE.md)
+for what was checked before publication, the current release's known limits,
+and its dated pass/fail result). Rules for any further release — a broader
+visibility change, a stable/promoted release, or a new public repository —
+still require their own explicit human approval; see
+[`docs/public-private-boundary.md`](docs/public-private-boundary.md).
 
 ## License
 

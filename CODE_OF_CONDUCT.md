@@ -30,8 +30,12 @@ requests, discussions, and any other official project communication channel.
 
 ## Enforcement
 
-Instances of unacceptable behavior may be reported by opening a private issue
-or contacting the maintainers directly. All reports will be reviewed promptly.
+Instances of unacceptable behavior may be reported by opening a GitHub issue
+or contacting the maintainers directly. This repository does not currently
+have a confidential reporting channel configured (see `SECURITY.md`'s
+"Reporting a Security Issue" for the same disclosed gap); a public issue with
+only the minimum necessary detail is the available option until one exists.
+All reports will be reviewed promptly.
 Maintainers will take appropriate action including warnings, temporary bans,
 or permanent removal from the project.
 

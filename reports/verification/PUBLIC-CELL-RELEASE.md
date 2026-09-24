@@ -1,14 +1,21 @@
-# Release Verification — Teamcell Lite v0.4 (teamcell-lite-v0.4.0-rc.6)
+# Release Verification — Teamcell Lite v0.4 (teamcell-lite-v0.4.0-rc.7)
 
 This report records how the installable Teamcell Lite release candidate in
 this repository was verified before publication. It is distribution
 evidence: it is not installed into Cells and does not prove anything about a
 particular Cell (each installed Cell keeps its own receipt and closeout
-proof). Release candidate 6 is a documentation-only staging update over
-candidate 5: it discloses two known limitations surfaced by post-candidate-5
-real-world testing (see "Scope and limits" below) and carries no kit,
-installer, or schema changes — the kit tree hash is unchanged from candidate
-5. Release candidate 5 itself fixed a real gap candidate 4's own kit shipped
+proof). Release candidate 7 is a documentation-only alignment update over
+candidate 6: it corrects several public-facing descriptions (README,
+`docs/public-private-boundary.md`, `SECURITY.md`, `SUPPORT.md`,
+`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` and this report) that still described
+the pre-publication state — unpublished, Teamcell Lite excluded, docs-only,
+no runtime code — after the staging publication had already happened.
+Candidate 6 was itself a documentation-only staging update over candidate 5:
+it disclosed two known limitations surfaced by post-candidate-5 real-world
+testing (see "Scope and limits" below). Neither candidate 6 nor candidate 7
+carries any kit, installer, template or schema change — the kit tree hash is
+unchanged since candidate 5. Release candidate 5 itself fixed a real gap
+candidate 4's own kit shipped
 with: `docs/teamcell-gate-matrix.md` (which decision classes need a Human
 Gate under which governance profile) was referenced from four kit files but
 never installed into a Cell, so an installed Cell could not answer that
@@ -21,8 +28,15 @@ the baseline package automatically (source root ".", no
 `packages/PACKAGES.yaml` change needed — the same mechanism candidate 4 used
 for `LICENSE`). Nothing else changed against candidate 4: same MIT/CC BY 4.0
 scope, same handoff-format/role-rule/P3 content; every check below was
-re-run from scratch against the candidate-5 tree, none of the candidate-4
-results are carried over.
+re-run from scratch against this release's own tree at the time it was
+built, never carried over from an earlier candidate's run. The full checked
+chronology: candidate 5 (2026-09-22) introduced this suite's 309 checks and
+passed 309/309 against its own tree; candidate 6 (2026-09-23, documentation
+only) re-ran the identical, unmodified suite from scratch against its own
+tree and again passed 309/309; candidate 7 (2026-09-23, documentation only —
+this candidate) again re-ran the identical, unmodified suite from scratch
+against its own tree — see "How it was verified" below for its own dated
+result. See this file's own revision history for any later candidate.
 
 ## What was released
 
@@ -43,7 +57,8 @@ Two template files are deliberately not part of the kit (listed with reasons
 in `SOURCE-MANIFEST.json`): a maintainer-side owner watch list, and a
 historical seed validation report of an earlier template version.
 
-New in this candidate: every Cell ships one shared project-instruction core
+Present since candidate 2 (unchanged since; not introduced by this
+candidate — verified against candidate 2's own export manifest): every Cell ships one shared project-instruction core
 (`templates/PROJECT-INSTRUCTIONS.template.md`), a Cell profile
 (`.bcos/CELL-PROFILE.yaml`) and `scripts/render-instructions.py`, which
 renders the paste block for app projects (with a ChatGPT size check), a
@@ -70,7 +85,13 @@ isolated home directory, no global Git configuration, no GitHub CLI on the
 `PATH` and no tokens — the situation of a new user without access to any
 private repository. Python 3 with PyYAML was the only added requirement.
 
-Result: **309 of 309 checks passed, 0 failed.** (288 carried over from rc.4, re-run from scratch, plus 21 new gate-matrix-availability checks.)
+Result, candidate 5 (2026-09-22), the suite's introduction: **309 of 309
+checks passed, 0 failed** against candidate 5's own tree (288 checks
+originating from candidate 4's suite, re-run from scratch — not reused as
+old evidence — plus 21 new gate-matrix-availability checks). Every later
+candidate's own dated re-run result is recorded in this file's revision
+history and in the private task's evidence, not restated here as if newly
+run today.
 
 | Area | What was checked |
 |---|---|

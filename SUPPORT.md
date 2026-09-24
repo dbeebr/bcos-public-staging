@@ -13,8 +13,10 @@ Support is best-effort and community-driven.
   feedback. Open an issue with as much context as possible.
 - **Documentation:** Start with `docs/manifesto.md`, `docs/core-model.md`, and
   `docs/public-private-boundary.md`.
+- **Installing a Cell:** `docs/create-a-cell.md` ("Install path") is the
+  practical, step-by-step entry point for the shipped Teamcell Lite kit.
 - **Templates and Examples:** The `templates/` and `examples/neutral-cell/`
-  directories are the practical starting point.
+  directories are the practical starting point for building a Cell by hand.
 
 ## What We Can Help With
 
@@ -22,11 +24,16 @@ Support is best-effort and community-driven.
 - Understanding template fields and their purpose
 - Improving documentation that is unclear
 - Reporting errors in examples or templates
+- Reporting installer, renderer or validator errors (`scripts/`) against the
+  documented quickstart in `docs/create-a-cell.md` — these are relevant,
+  actionable bug reports, not out of scope
 
-## What Is Out of Scope for v0.1
+## What Is Out of Scope
 
-- Enterprise support or SLA commitments — none are offered at v0.1
-- Runtime implementation support — v0.1 does not include runtime code
+- Enterprise support or SLA commitments — none are offered
+- Support for a custom runtime, product or service you build on top of BCOS
+  or the Teamcell Lite package — using the shipped installer/renderer/
+  validators themselves is in scope above
 - Private operating system consultation
 - Bespoke BCOS customization or consulting
 

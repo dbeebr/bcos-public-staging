@@ -100,4 +100,4 @@ Agents can propose decisions, draft artifacts, run validations, and produce repo
 
 This boundary matters most when work moves fast. An agent that can execute twenty tasks in an afternoon still needs a human to decide whether to publish, change a license, or commit to a public interface. The Human Gate is where speed pauses for judgment.
 
-A healthy Cell makes this authority explicit: who owns each gate, what they are deciding, and what evidence they need before approving. Future operating templates — such as team bootstrap kits — may encode this authority directly into the Cell's project configuration so that every participant, human or agent, knows the rules from the start.
+A healthy Cell makes this authority explicit: who owns each gate, what they are deciding, and what evidence they need before approving. The shipped Teamcell Lite bootstrap kit already encodes this authority directly into the Cell's project configuration — `governance_profile`, `decision_owner_roles` and named `role_bindings` in `.bcos/CELL-GOVERNANCE.yaml`, resolved by the installer at install time — so that every participant, human or agent, knows the rules from the start.

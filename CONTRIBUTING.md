@@ -22,7 +22,9 @@ changes, an explicit Human Gate decision:
 - License or governance model
 - Security posture or disclosure policy
 - Architecture decisions
-- Runtime code (not included in v0.1 docs-only release)
+- The shipped installer/renderer/validator tools (`scripts/`), the Teamcell
+  Lite kit (`distribution/`) or its contracts (`schemas/`) — this is real,
+  installed-by-users code and configuration, not a docs-only surface
 
 ## How to Contribute
 

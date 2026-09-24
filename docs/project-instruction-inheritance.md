@@ -200,6 +200,16 @@ machine-readable profile for hosts with retrieval or tools. The host's chat
 template, system-role handling and tool permissions remain the host's
 integration work; nothing here runs, downloads or configures a model.
 
+**Known gap:** the context pack does not yet automatically select or
+include a Cell's identity and governance files (`TEAM-PROFILE.md`,
+`.bcos/CELL-PROFILE.yaml`, `.bcos/CELL-GOVERNANCE.yaml`,
+`docs/teamcell-gate-matrix.md`) or a specific inbox entry, and does not warn
+when it silently omits them — pick the relevant procedures explicitly
+(`--procedure <name>`, repeatable) and add any needed identity/governance/
+inbox file to the pack by hand until this is fixed. See
+`reports/verification/PUBLIC-CELL-RELEASE.md` ("Scope and limits") for the
+evidence this was found against a real external-model test.
+
 ## Budgets
 
 ChatGPT project instructions are budgeted: target 7200, hard limit 8000,

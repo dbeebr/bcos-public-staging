@@ -1,9 +1,11 @@
 # Public-Private Boundary in BCOS
 
-## What BCOS Public v0.1 Includes
+## What This Public Staging Repository Includes
 
-This extraction package (`public-extraction/`) is the curated public surface of
-BCOS v0.1. It includes:
+This extraction package is the curated public surface of the BCOS v0.1
+concept plus the Teamcell Lite v0.4 distribution built on it (exact version:
+[`distribution/teamcell-lite/SOURCE-MANIFEST.json`](../distribution/teamcell-lite/SOURCE-MANIFEST.json)).
+It includes:
 
 - **`README.md`** — Public overview and quickstart
 - **`LICENSE`** — index: MIT for the operative Teamcell Lite Cell package
@@ -12,40 +14,56 @@ BCOS v0.1. It includes:
 - **`CONTRIBUTING.md`** — Contribution guidelines
 - **`CODE_OF_CONDUCT.md`** — Community conduct policy
 - **`SECURITY.md`** — Security disclosure policy
-- **`SUPPORT.md`** — Support expectations for v0.1 experimental
+- **`SUPPORT.md`** — Support expectations for an experimental release
 - **`docs/manifesto.md`** — Why context must survive the conversation
 - **`docs/core-model.md`** — Public core model primitives
 - **`docs/public-private-boundary.md`** — This file; explains the boundary
 - **`templates/`** — Generic reusable task, decision, handoff, proof, and human-gate templates
 - **`examples/neutral-cell/`** — A neutral, privacy-safe example cell
+- **`examples/setbrain-cell/`** — A complete fictional operating Cell with a finished work loop and an active app package
+- **`distribution/teamcell-lite/`** — The installable Teamcell Lite v0.4 kit (`bootstrap-kit/`) and its `SOURCE-MANIFEST.json` provenance/version/hash record
+- **`scripts/`** — The installer: preview, preflight, bootstrap, receipt generation, personalization
+- **`schemas/`** — The routing-frontmatter, completion-record and Teamcell package/receipt/governance/ownership contracts
+- **`reports/verification/PUBLIC-CELL-RELEASE.md`** — How this release was checked before publication, and its known limits
 
-## What BCOS Public v0.1 Explicitly Excludes
+## What This Repository Explicitly Excludes
 
 The following are excluded from this public extraction package:
 
 ### Private Operating Repository
 
-The private operating repository that generated this BCOS standard is not
-published. That repository contains:
+The private operating repository that generated this BCOS standard and
+Teamcell Lite distribution is not published. That repository contains:
 
 - private task history and operating records;
 - raw session handoffs and in-progress notes;
 - person-specific and organization-specific context;
 - internal governance artifacts.
 
-These are deliberately kept private. BCOS public v0.1 is a curated extraction
-from that repository, not a copy or visibility flip of it.
+These are deliberately kept private. This public staging repository is a
+curated extraction from that repository, not a copy or visibility flip of it.
+Provenance labels (private upstream repository names and commit SHAs in
+`SOURCE-MANIFEST.json`, or internal task/pattern IDs in tool comments) are
+disclosed references for auditability, not a private access requirement —
+nothing in this repository needs access to the private repository to clone,
+install or validate.
 
 ### BCOS Product Internals
 
-The following are excluded from v0.1:
+The following are excluded:
 
-- **Teamcell Lite** — A specific BCOS cell template product that may be released
-  separately in the future after its own sanitization and launch review.
 - **Lumen** — An internal AI-assisted operating product. Not included.
 - **Command Center** — An internal operating interface. Not included.
 - **MCP integrations** — Runtime integrations. Not included.
-- **Runtime code** — BCOS v0.1 is a docs-first release. No runtime is included.
+- **Private operating history and content** — the private repository's own
+  task/decision/handoff/review history, and any real Cell's own operating
+  data, participant identities or business content. Not included.
+
+Teamcell Lite itself is no longer excluded: since the rollout recorded below,
+this repository ships the installable Teamcell Lite v0.4 kit, its installer
+tools (executable Python/shell scripts, not documents only), its schemas and
+its release verification report as real, checked-out content — see "What
+This Public Staging Repository Includes" above.
 
 ### Private Reference Categories
 
@@ -69,14 +87,21 @@ gates.
 
 ## Publication Status
 
-This extraction package is prepared inside the private operating repository and
-has not been published. Publication requires a separate launch Human Gate that
-explicitly approves:
+This extraction package is prepared inside the private operating repository.
+A staging publication has already occurred: this content is published as
+`dbeebr/bcos-public-staging`, a public GitHub repository. See
+[`../reports/verification/PUBLIC-CELL-RELEASE.md`](../reports/verification/PUBLIC-CELL-RELEASE.md)
+for the exact published commit, version label and what was checked
+beforehand.
 
-- the repository creation;
-- the visibility change or new public repository;
-- the final redaction state;
-- the license;
-- the public naming.
+That staging publication was itself an explicitly human-approved decision
+(recorded in the private repository's task history) covering the redaction
+state, license and public naming actually shipped here — it is not an
+informally leaked or accidental copy.
 
-No publication has occurred as of this extraction date.
+Any further change to this boundary — a broader visibility change, promoting
+this staging content to a differently named or "stable" public repository,
+or publishing additional private content beyond what is listed above — still
+requires its own separate, explicit human approval. This page will be
+updated when such a decision is made; until then, treat only what is listed
+under "What This Public Staging Repository Includes" as published.
