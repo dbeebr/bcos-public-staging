@@ -26,7 +26,10 @@ this repository — no account, token or private repository needed.
 **Requirements:** Git with your name and e-mail configured
 (`git config --global user.name ...` / `user.email ...`), Python 3 with
 PyYAML (`python3 -m pip install --user pyyaml`), a POSIX shell. The GitHub CLI
-is not needed. This release candidate was tested on macOS only (Python 3.12
+is not needed; cloning this public repository and installing locally require
+no GitHub account or token. External AI services may require their own
+accounts or credentials if you use the optional instruction-block step below.
+This release candidate was tested on macOS only (Python 3.12
 with PyYAML 6; the Cell-side instruction renderer and validators also with
 the macOS system Python 3.9 without PyYAML). Linux and WSL on Windows are
 expected to behave the same but were not run for this release.

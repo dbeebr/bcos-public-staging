@@ -72,9 +72,12 @@ Three paths:
 
 **Install path** — install a ready Teamcell Lite Cell from this repository:
 preview (no writes) → confirm → receipt → commit → start, then optional
-instruction blocks for your agents. Needs only Git and Python 3 with PyYAML,
-no account or token. Packages: the
-baseline, plus optional `teamcell-plus-profile` and `team-capability-pack`.
+instruction blocks for your agents. Requires Git with a configured user name
+and email, Python 3 with PyYAML, and a POSIX shell. Cloning this public
+repository and installing locally require no GitHub account or token.
+External AI services may require their own accounts or credentials.
+Packages: the baseline, plus optional `teamcell-plus-profile` and
+`team-capability-pack`.
 Step by step: [`docs/create-a-cell.md`](docs/create-a-cell.md) ("Install
 path").
 
